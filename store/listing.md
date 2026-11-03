@@ -12,7 +12,7 @@ Record Google Meet and web call tabs with your mic and shared screen sound, on y
 
 ## Category
 
-Productivity
+Productivity, then Communication (if the dashboard shows only one list, pick Communication)
 
 ## Language
 
