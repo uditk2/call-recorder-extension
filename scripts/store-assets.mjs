@@ -178,6 +178,18 @@ try {
     <h1 style="font-size:31px">Call Recorder for Google Meet</h1><p class="sub" style="font-size:17px;margin-top:8px">Record Meet calls on your own device.</p></div>
 </div>`);
   await render(browser, promo, { width: 440, height: 280 }, `${OUT.promo}/small-tile-440x280.png`);
+
+  // The marquee tile (1400 x 560): the name and promise on the left, the popup recording a shared sound on the right.
+  const popupShared = await capture(browser, shots.find((x) => x.name === "popup-shared"));
+  const marquee = frame(`
+<div style="width:1400px;height:560px;position:relative;background:#14523d;overflow:hidden">
+  <img src="${logoPng}" width="84" height="84" alt="" style="position:absolute;left:90px;top:96px">
+  <div style="position:absolute;left:90px;top:214px;width:780px"><div class="bar" style="height:6px;width:64px;margin-bottom:22px"></div>
+    <h1 style="font-size:68px">Call Recorder<br>for Google Meet</h1>
+    <p class="sub" style="font-size:28px;margin-top:20px;line-height:1.35">Records the call, your mic and the sound you share. On your computer. Nothing is uploaded.</p></div>
+  <img class="ui" src="${toDataUri(popupShared)}" style="position:absolute;right:110px;top:50px;height:460px">
+</div>`);
+  await render(browser, marquee, { width: 1400, height: 560 }, `${OUT.promo}/marquee-tile-1400x560.png`);
 } finally {
   await browser.close();
   rmSync(OUT.tmp, { recursive: true, force: true });
