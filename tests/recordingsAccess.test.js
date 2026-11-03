@@ -135,16 +135,45 @@ describe("RecordingsAccess", () => {
   });
 });
 
+describe("RecordingsAccess from the setup page", () => {
+  it("keeps the Call Recordings folder the person shows us, and then reports transcripts as allowed", async () => {
+    const picked = fakeDir("Call Recordings");
+    const { access, rootHandles } = setup({ picked });
+    expect(await access.isEnabled({ folderName: null })).toBe(false);
+    expect(await access.enable({ folderName: null })).toBe("Downloads/Call Recordings");
+    expect(await rootHandles.get()).toBe(picked);
+    expect(await access.isEnabled({ folderName: null })).toBe(true);
+  });
+  it("refuses another folder and tells the person how to make the right one", async () => {
+    const { access, rootHandles } = setup({ picked: fakeDir("Documents") });
+    await expect(access.enable({ folderName: null })).rejects.toMatchObject({ message: expect.stringContaining("New Folder") });
+    expect(await rootHandles.get()).toBeUndefined();
+  });
+  it("only asks Chrome to allow the chosen output folder when recordings are saved there", async () => {
+    const chosen = fakeDir("Calls", { permission: "prompt" });
+    const { access } = setup({ output: chosen });
+    expect(await access.isEnabled({ folderName: "Calls" })).toBe(false);
+    chosen.permission = "granted"; // the person said yes in Chrome's prompt
+    expect(await access.enable({ folderName: "Calls" })).toBe("Calls");
+    expect(await access.isEnabled({ folderName: "Calls" })).toBe(true);
+  });
+  it("says so when Chrome did not allow the chosen folder", async () => {
+    const { access } = setup({ output: fakeDir("Calls", { permission: "denied" }) });
+    await expect(access.enable({ folderName: "Calls" })).rejects.toMatchObject({ code: "not-found" });
+  });
+});
+
 describe("RecordingFolderFiles", () => {
   const transcript = { segments: [{ start: 1, end: 3, text: "Hello." }] };
-  it("saves transcript.txt and transcript.srt in the recording's own folder", async () => {
+  it("saves transcript.txt and subtitles named after the video, in the recording's own folder", async () => {
     const root = withRecording(fakeDir("Call Recordings"));
     const { access } = setup({ root });
     const names = await new RecordingFolderFiles(access).save(downloaded, transcript);
-    expect(names).toEqual(["transcript.txt", "transcript.srt"]);
+    expect(names).toEqual(["transcript.txt", "call-a.srt"]);
     const folder = root.dirs.get("call-a");
     expect(folder.files.get("transcript.txt")).toBe("[0:01] Hello.");
-    expect(folder.files.get("transcript.srt")).toContain("00:00:01,000 --> 00:00:03,000");
+    // Players such as VLC load subtitles only when the file has the video's name.
+    expect(folder.files.get("call-a.srt")).toContain("00:00:01,000 --> 00:00:03,000");
     expect(folder.files.get("call-a.mp4")).toBe("video bytes");
   });
   it("names the files after an older recording that has no folder of its own", async () => {
@@ -156,7 +185,7 @@ describe("RecordingFolderFiles", () => {
       location: { kind: "downloads", downloadId: 2, path: "/x/Call Recordings/call-old.mp4" },
     };
     const names = await new RecordingFolderFiles(setup({ root }).access).save(old, transcript);
-    expect(names).toEqual(["call-old-transcript.txt", "call-old-transcript.srt"]);
+    expect(names).toEqual(["call-old-transcript.txt", "call-old.srt"]);
     expect(root.files.has("call-old-transcript.txt")).toBe(true);
   });
   it("fails clearly when the folder is not available", async () => {

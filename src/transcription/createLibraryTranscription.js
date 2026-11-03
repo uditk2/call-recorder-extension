@@ -2,10 +2,9 @@ import { KeyValueTranscriptRepository } from "../application/keyValueTranscriptR
 import { TranscriptionService } from "../application/transcriptionService.js";
 import { CONFIG } from "../config.js";
 import { ChromeKeyValueStore } from "../infra/chromeKeyValueStore.js";
-import { directoryHandleStore, recordingsRootStore } from "../shared/directoryHandleStore.js";
+import { createRecordingsAccess } from "./createRecordingsAccess.js";
 import { lazyEngine } from "./lazyEngine.js";
 import { RecordingFolderFiles } from "./recordingFolderFiles.js";
-import { RecordingsAccess } from "./recordingsAccess.js";
 import { WebAudioDecoder } from "./webAudioDecoder.js";
 
 /** Puts the transcription pieces together for the library page. This is the only place that knows which engine is used. */
@@ -23,12 +22,7 @@ export function createLibraryTranscription() {
     });
   });
   const repository = new KeyValueTranscriptRepository(new ChromeKeyValueStore());
-  const access = new RecordingsAccess({
-    outputHandles: directoryHandleStore,
-    rootHandles: recordingsRootStore,
-    pickDirectory: () => showDirectoryPicker({ id: "call-recorder-recordings", mode: "readwrite", startIn: "downloads" }),
-    rootName: CONFIG.downloadsFolder,
-  });
+  const access = createRecordingsAccess();
   const service = new TranscriptionService({
     decoder: new WebAudioDecoder(),
     engine,

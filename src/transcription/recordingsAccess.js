@@ -53,6 +53,38 @@ export class RecordingsAccess {
     return root;
   }
 
+  /**
+   * Turns transcripts on from the setup page, before any recording needs reading. Must be called from a click.
+   * Recordings saved in a folder the person chose: Chrome is asked to allow that folder. Recordings saved to Downloads: the person
+   * shows us the "Call Recordings" folder there once, because Chrome never lets an extension read Downloads by itself.
+   * @param {{ folderName: string | null }} settings
+   * @returns {Promise<string>} Where recordings will be read from, in words.
+   */
+  async enable({ folderName }) {
+    if (folderName) {
+      const chosen = await this.d.outputHandles.get();
+      if (!chosen || (await chosen.requestPermission({ mode: "readwrite" })) !== "granted") {
+        throw new AppError("not-found", `Chrome did not allow access to your recordings folder, "${folderName}".`);
+      }
+      return folderName;
+    }
+    const picked = await this.d.pickDirectory();
+    if (picked.name !== this.d.rootName) {
+      throw new AppError(
+        "not-found",
+        `Choose the "${this.d.rootName}" folder inside Downloads. If it is not there yet, press New Folder in that window, name it "${this.d.rootName}", and choose it.`,
+      );
+    }
+    await this.d.rootHandles.set(picked);
+    return `Downloads/${this.d.rootName}`;
+  }
+
+  /** Whether transcripts can read recordings right now, for the setup page. */
+  async isEnabled({ folderName }) {
+    const handle = await (folderName ? this.d.outputHandles : this.d.rootHandles).get();
+    return Boolean(handle) && (await handle.queryPermission({ mode: "readwrite" })) === "granted";
+  }
+
   /** The folder that holds the recording's file, and the file's name. */
   async locate(root, record) {
     const path = this.relativePathOf(record);

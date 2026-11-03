@@ -173,7 +173,7 @@ try {
     {
       name: "setup", page: "setup.html", viewport: { width: 760, height: 700 }, element: "main",
       replies: {}, settings: { folderName: null, setupDone: false },
-      html: (img) => wide("Set up in two steps", "Allow your microphone, and pick a folder if you do not want Downloads. Nothing is uploaded.", img, 820),
+      html: (img) => wide("Set up once", "Allow your microphone, choose where recordings go, and turn on transcripts if you want them. Nothing is uploaded.", img, 820),
     },
   ];
   let n = 1;

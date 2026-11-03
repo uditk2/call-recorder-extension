@@ -2,6 +2,7 @@ import { KeyValueSettingsStore } from "../application/keyValueRepositories.js";
 import { CONFIG } from "../config.js";
 import { ChromeKeyValueStore } from "../infra/chromeKeyValueStore.js";
 import { directoryHandleStore } from "../shared/directoryHandleStore.js";
+import { createRecordingsAccess } from "../transcription/createRecordingsAccess.js";
 import { byId, setText, show, showError } from "./dom.js";
 const settings = new KeyValueSettingsStore(new ChromeKeyValueStore());
 const ui = {
@@ -14,7 +15,12 @@ const ui = {
   reset: byId("reset-folder"),
   folderStatus: byId("folder-status"),
   folderError: byId("folder-error"),
+  transcriptFolder: byId("transcript-folder"),
+  allowTranscripts: byId("allow-transcripts"),
+  transcriptsStatus: byId("transcripts-status"),
+  transcriptsError: byId("transcripts-error"),
 };
+const access = createRecordingsAccess();
 function chip(el, text, kind = "") {
   setText(el, text);
   el.className = `chip ${kind}`.trim();
@@ -56,19 +62,37 @@ async function pickFolder() {
   } catch (e) {
     if (e.name !== "AbortError") showError(ui.folderError, e);
   }
-  await renderFolder();
+  await Promise.all([renderFolder(), renderTranscripts()]);
+}
+async function renderTranscripts() {
+  const { folderName } = await settings.read();
+  setText(ui.transcriptFolder, folderName ? `the folder "${folderName}"` : `Downloads/${CONFIG.downloadsFolder}`);
+  const on = await access.isEnabled({ folderName }).catch(() => false);
+  chip(ui.transcriptsStatus, on ? "Allowed" : "Not allowed yet", on ? "ok" : "");
+  setText(ui.allowTranscripts, on ? "Check again" : "Allow reading recordings");
+}
+async function allowTranscripts() {
+  show(ui.transcriptsError, false);
+  try {
+    // The folder picker and Chrome's prompt only open from a click, so this runs straight from the button.
+    await access.enable(await settings.read());
+  } catch (e) {
+    if (e.name !== "AbortError") showError(ui.transcriptsError, e);
+  }
+  await renderTranscripts();
 }
 async function resetFolder() {
   await directoryHandleStore.clear();
   await settings.write({ folderName: null });
-  await renderFolder();
+  await Promise.all([renderFolder(), renderTranscripts()]);
 }
 async function init() {
   setText(ui.defaultFolder, `Downloads/${CONFIG.downloadsFolder}`);
   ui.allowMic.addEventListener("click", () => void allowMic());
   ui.pick.addEventListener("click", () => void pickFolder());
   ui.reset.addEventListener("click", () => void resetFolder());
+  ui.allowTranscripts.addEventListener("click", () => void allowTranscripts());
   ui.noiseToggle.addEventListener("change", () => void settings.write({ noiseReduction: ui.noiseToggle.checked }));
-  await Promise.all([renderMic(), renderFolder()]);
+  await Promise.all([renderMic(), renderFolder(), renderTranscripts()]);
 }
 void init();

@@ -8,7 +8,7 @@
   <main class="page">
     <a class="brand" href="library.html"><img src="icons/icon-48.png" alt="">Call Recorder</a>
     <div class="stack">
-      <h1>Set up in two steps</h1>
+      <h1>Set up</h1>
       <p class="lead">Recordings stay on this computer. Nothing is uploaded, and there is no account.</p>
     </div>
 
@@ -36,6 +36,17 @@
       </div>
       <p class="faint">Chrome may ask you to allow a chosen folder again in a new browser session. If you do not, recordings go to Downloads instead.</p>
       <p class="notice err" id="folder-error" hidden></p>
+    </section>
+
+    <section class="card stack">
+      <div class="row"><span class="step-no">3</span><h2>Transcripts (optional)</h2></div>
+      <p class="muted">Turn the text of a call into a transcript, made on this computer. Chrome only lets an extension read files in a folder you allow, so this allows reading recordings in <strong id="transcript-folder"></strong>.</p>
+      <div class="row">
+        <button class="btn" id="allow-transcripts">Allow reading recordings</button>
+        <span class="chip" id="transcripts-status"></span>
+      </div>
+      <p class="faint">The first transcript downloads a speech model once (about 77 MB), because the model must run here to keep your recordings off other people's servers. It is kept, so nothing is downloaded again. You can skip this now and turn it on later from a recording.</p>
+      <p class="notice err" id="transcripts-error" hidden></p>
     </section>
 
     <a class="quiet-link" href="library.html">Open the recordings library</a>

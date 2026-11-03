@@ -133,19 +133,19 @@ export function createTranscriptsView({ container, transcription, findRecord, on
           onError(e);
         });
     });
+    const where = record.location?.kind === "folder" ? `"${record.location.folderName}"` : "Downloads/Call Recordings";
     container.replaceChildren(
       el("section", { class: "card stack" }, [
         el("div", { class: "title clip", text: `Transcribe: ${record.title}` }),
         el("p", {
           class: "muted",
-          text:
-            record.location?.kind === "folder"
-              ? `To read this recording, Chrome needs you to allow access to your recordings folder, "${record.location.folderName}", again.`
-              : 'To read this recording, Chrome needs you to allow access to your "Call Recordings" folder in Downloads. Chrome asks for this once, because an extension cannot read your files by itself.',
+          text: `Your recordings are saved in ${where}. To make a transcript, allow this extension to read files in that folder. Chrome only lets an extension read a folder when you say so, and it asks once.${
+            record.location?.kind === "folder" ? "" : ' In the window that opens, choose the "Call Recordings" folder inside Downloads.'
+          }`,
         }),
         el("p", {
           class: "faint",
-          text: "It only reads your recordings there, and saves each transcript in the same folder as its recording. Nothing leaves your computer.",
+          text: "It only reads the recording you transcribe, and saves the transcript in the same folder as that recording. Nothing leaves your computer.",
         }),
         el("div", { class: "row" }, [allow, el("button", { class: "btn", text: "Back", on: { click: () => void showList() } })]),
       ]),

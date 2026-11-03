@@ -9,8 +9,8 @@ Do not paste any of this into the store until the transcription branch is merged
 - **Manifest:** no new keys. Do not add `cross_origin_embedder_policy` or `cross_origin_opener_policy`: they stop tab capture from starting. The build check blocks them.
 - **Remote code:** still No. The model files are data (weights), not code. All code and WebAssembly are in the package.
 - **Network:** new. On the first Transcribe the library page downloads the speech model (about 77 MB) from huggingface.co, once. Say so in the listing and in the privacy policy (the policy text is already updated in `store/privacy-policy.md`).
-- **Folder access:** new, but it is not a manifest permission. The first Transcribe asks the person to allow the "Call Recordings" folder in Chrome's own folder prompt. Mention it in the reviewer notes.
-- **Layout:** new recordings are saved in a folder of their own (`Call Recordings/call-.../call-....mp4`), and the transcript is saved beside the video as transcript.txt and transcript.srt. Older recordings stay where they are.
+- **Folder access:** new, but it is not a manifest permission. An optional third step on the setup page, or the first Transcribe, asks the person to allow the "Call Recordings" folder in Chrome's own folder prompt. Mention it in the reviewer notes. The setup screenshot in the listing should show the new step.
+- **Layout:** new recordings are saved in a folder of their own (`Call Recordings/call-.../call-....mp4`), and the transcript is saved beside the video as transcript.txt, with subtitles named after the video (call-....srt) so VLC and similar players load them. Older recordings stay where they are.
 - **Data usage:** unchanged. Nothing about the user is sent. A model download reveals the IP address to Hugging Face, like any download.
 
 ## Single purpose (still true)

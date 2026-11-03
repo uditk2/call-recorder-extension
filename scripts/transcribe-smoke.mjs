@@ -80,13 +80,23 @@ try {
   await page.evaluate(() => localStorage.setItem("transcriptionHost", "http://localhost:8792/"));
   await page.reload();
 
+  // ---- setup page: the optional third step ----
+  const setupPage = await context.newPage();
+  await setupPage.goto(`chrome-extension://${id}/setup.html`);
+  await setupPage.getByRole("button", { name: "Allow reading recordings" }).waitFor({ timeout: 15_000 });
+  const setupText = await setupPage.locator("main").innerText();
+  check("setup offers transcripts as an optional third step, naming the folder", /Transcripts \(optional\)/.test(setupText) && /Downloads\/Call Recordings/.test(setupText));
+  check("setup explains the one-time model download", /downloads a speech model once/.test(setupText));
+  check("setup shows transcripts as not allowed yet", /Not allowed yet/.test(await setupPage.locator("#transcripts-status").innerText()));
+  await setupPage.close();
+
   check("a saved recording has a Transcribe button", (await page.getByRole("button", { name: "Transcribe", exact: true }).count()) === 1);
 
   // ---- before access is allowed: one clear step, no picking ----
   await page.getByRole("button", { name: "Transcribe", exact: true }).click();
   await page.getByRole("button", { name: "Allow access" }).waitFor({ timeout: 15_000 });
   const prompt = await page.locator("#pane-transcripts").innerText();
-  check("without access it asks once to allow the Call Recordings folder", /Call Recordings/.test(prompt) && /once/.test(prompt));
+  check("without access it names the folder and asks to allow reading it, once", /Downloads\/Call Recordings/.test(prompt) && /read files in that folder/.test(prompt) && /once/.test(prompt));
   check("there is nothing to choose: no file, model or language fields", (await page.locator("#transcribe-file, #transcribe-model, #transcribe-language").count()) === 0);
 
   // ---- the person allows the folder (here: a private folder that already holds the recording) ----
@@ -135,16 +145,16 @@ try {
   check("the model is kept in the browser's cache", await page.evaluate(async () => (await (await caches.open("transformers-cache")).keys()).some((r) => r.url.endsWith("decoder_model_merged_quantized.onnx"))));
 
   // ---- the transcript sits in the recording's own folder ----
-  check("the page says where the files were saved", /transcript\.txt and transcript\.srt/.test(await page.locator("#pane-transcripts").innerText()));
+  check("the page says where the files were saved", /transcript\.txt and call\.srt/.test(await page.locator("#pane-transcripts").innerText()));
   const saved = await page.evaluate(async (folder) => {
     const dir = await (await (await navigator.storage.getDirectory()).getDirectoryHandle("Call Recordings")).getDirectoryHandle(folder);
     const out = {};
     for await (const [name, handle] of dir.entries()) out[name] = handle.kind === "file" ? (await (await handle.getFile()).text()).slice(0, 60).replace(/\s+/g, " ") : "";
     return out;
   }, FOLDER);
-  check("the folder holds the recording, transcript.txt and transcript.srt", Object.keys(saved).sort().join(",") === "call.wav,transcript.srt,transcript.txt", Object.keys(saved).join(","));
+  check("the folder holds the recording, transcript.txt and subtitles named after it", Object.keys(saved).sort().join(",") === "call.srt,call.wav,transcript.txt", Object.keys(saved).join(","));
   check("transcript.txt starts with a time and the first words", /^\[0:00\] Hello everyone/.test(saved["transcript.txt"] ?? ""), saved["transcript.txt"]);
-  check("transcript.srt is in subtitle format", /^1 00:00:00,\d{3} --> /.test(saved["transcript.srt"] ?? ""), saved["transcript.srt"]);
+  check("call.srt is in subtitle format", /^1 00:00:00,\d{3} --> /.test(saved["call.srt"] ?? ""), saved["call.srt"]);
 
   // ---- saved in the app too, and downloadable ----
   await page.getByRole("button", { name: "Back" }).click();
@@ -171,6 +181,12 @@ try {
   await page.getByRole("button", { name: "Delete" }).click();
   await page.getByText("No transcripts yet").waitFor();
   check("deleting removes the transcript", true);
+  // ---- setup after access is allowed ----
+  const setupAgain = await context.newPage();
+  await setupAgain.goto(`chrome-extension://${id}/setup.html`);
+  await setupAgain.getByText("Allowed", { exact: true }).waitFor({ timeout: 15_000 });
+  check("setup shows transcripts as allowed once the folder is kept", true);
+  await setupAgain.close();
   check("no errors in the page console", problems.length === 0, problems.slice(0, 3).join(" | "));
 } catch (e) {
   check("the transcribe test ran to the end", false, String(e).slice(0, 400));
