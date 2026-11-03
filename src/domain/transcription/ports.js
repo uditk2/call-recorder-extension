@@ -4,8 +4,12 @@
  * @typedef {object} TranscriptionEngine
  * @property {(modelId: string, onProgress: (p: { loadedBytes: number; totalBytes: number }) => void) => Promise<void>} prepare
  *   Downloads the model the first time, keeps it on this computer, and loads it.
- * @property {(audio: Float32Array, options: { language?: string }) => Promise<{ start: number; end: number; text: string }[]>} transcribe
- *   One window of 16 kHz mono audio, at most 30 seconds. Times are in seconds from the start of the window.
+ * @property {(audio: Float32Array, options: { language?: string; hint?: string }) => Promise<{ start: number; end: number; text: string }[]>} transcribe
+ *   One window of 16 kHz mono audio, at most 30 seconds. Times are in seconds from the start of the window. A hint is example text
+ *   the model copies the spelling and style from; the engine must not return it as speech.
+ * @property {(audio: Float32Array) => Promise<{ language: string; confidence: number } | undefined>} [detectLanguage]
+ *   The language spoken in one window, as a Whisper language code such as "es", and how sure the model is (0 to 1).
+ *   Undefined for a model that only knows English.
  * @property {() => Promise<void>} dispose Frees the model's memory.
  */
 

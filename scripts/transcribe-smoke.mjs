@@ -97,7 +97,7 @@ try {
   await page.getByRole("button", { name: "Allow access" }).waitFor({ timeout: 15_000 });
   check("the access request is a pop-up over the library", await page.locator("dialog.dialog[open]").isVisible());
   const prompt = await page.locator("dialog.dialog").innerText();
-  check("without access it names the folder and asks to allow reading it, once", /Downloads\/Call Recordings/.test(prompt) && /read files in that folder/.test(prompt) && /once/.test(prompt) && /Settings/.test(prompt));
+  check("the request is short and names the folder", /Downloads\/Call Recordings/.test(prompt) && /pick the "Call Recordings" folder/.test(prompt) && prompt.length < 260, `${prompt.length} characters`);
   check("there is nothing to choose: no file, model or language fields", (await page.locator("#transcribe-file, #transcribe-model, #transcribe-language").count()) === 0);
 
   // ---- the person allows the folder (here: a private folder that already holds the recording) ----

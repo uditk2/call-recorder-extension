@@ -14,6 +14,9 @@ export function lazyEngine(load) {
     async transcribe(audio, options) {
       return (await get()).transcribe(audio, options);
     },
+    async detectLanguage(audio) {
+      return (await get()).detectLanguage?.(audio);
+    },
     async dispose() {
       if (engine) await engine.dispose();
     },

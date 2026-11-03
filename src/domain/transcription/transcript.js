@@ -5,6 +5,7 @@
  * @property {number} start Seconds from the start of the recording.
  * @property {number} end
  * @property {string} text
+ * @property {string} [language] The language this line was written in, when the model could tell.
  */
 
 /**

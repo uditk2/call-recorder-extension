@@ -1,5 +1,6 @@
 import { AppError, messageOf } from "../domain/errors.js";
-import { DEFAULT_MODEL_ID } from "../domain/transcription/models.js";
+import { chooseLanguage, decodingFor, dominantLanguage } from "../domain/transcription/language.js";
+import { DEFAULT_MODEL_ID, modelById } from "../domain/transcription/models.js";
 import { planWindows } from "../domain/transcription/speechPlanner.js";
 import { placeSegments } from "../domain/transcription/transcript.js";
 
@@ -37,16 +38,31 @@ export class TranscriptionService {
     await this.d.engine.prepare(modelId, (p) => onProgress({ phase: "model", ...p }));
     stopIfAborted();
 
-    const plan = planWindows(pcm, SAMPLE_RATE);
+    const plan = planWindows(pcm, SAMPLE_RATE, { maxWindowSec: modelById(modelId).windowSec });
     const segments = [];
     const started = this.d.clock.now();
+    // Calls switch language, so with "auto" the language is found again for every window, and the one before is kept when a window is
+    // too short or too unclear to judge. A language the caller named is used as it is. A model that only knows English has nothing to find.
+    const named = language === "auto" ? undefined : language;
+    const secondsByLanguage = new Map();
+    let spoken = named;
     for (let i = 0; i < plan.windows.length; i++) {
       // Checked before each window, so a stop that arrives while a window is running takes effect as soon as that window ends.
       stopIfAborted();
       const w = plan.windows[i];
       const audio = pcm.subarray(Math.floor(w.start * SAMPLE_RATE), Math.ceil(w.end * SAMPLE_RATE));
-      const raw = await this.d.engine.transcribe(audio, { language: language === "auto" ? undefined : language });
-      segments.push(...placeSegments(raw, w.start, w.end));
+      if (!named && this.d.engine.detectLanguage) {
+        try {
+          spoken = chooseLanguage(await this.d.engine.detectLanguage(audio), spoken, w.end - w.start);
+        } catch (e) {
+          // Not worth losing the transcript for: the window before decides, or the model assumes English.
+          console.warn("Language detection failed.", messageOf(e));
+        }
+        stopIfAborted();
+      }
+      if (spoken) secondsByLanguage.set(spoken, (secondsByLanguage.get(spoken) ?? 0) + (w.end - w.start));
+      const raw = await this.d.engine.transcribe(audio, decodingFor(spoken));
+      segments.push(...placeSegments(raw, w.start, w.end).map((s) => (spoken ? { ...s, language: spoken } : s)));
       const done = i + 1;
       // The estimate counts audio, not windows, because a window of speech takes about as long however short it is.
       const elapsed = this.d.clock.now() - started;
@@ -65,7 +81,7 @@ export class TranscriptionService {
       title: record.title,
       createdAt: this.d.clock.now(),
       model: modelId,
-      language,
+      language: named ?? dominantLanguage(secondsByLanguage) ?? language,
       durationSec: plan.totalSec,
       segments,
     };

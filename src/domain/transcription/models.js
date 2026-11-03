@@ -8,13 +8,29 @@
  * @property {string} label
  * @property {number} downloadMb Approximate size of the first download.
  * @property {boolean} multilingual English-only models cannot detect or switch language.
+ * @property {number} windowSec Longest stretch of speech sent in one go. A model that switches language is given short stretches,
+ *   because a window is written in one language and a long one can swallow a sentence in the other.
  */
 
 /** @type {TranscriptionModel[]} */
 export const TRANSCRIPTION_MODELS = [
-  { id: "tiny.en", repo: "onnx-community/whisper-tiny.en", label: "Fast, English only", downloadMb: 41, multilingual: false },
-  { id: "base", repo: "onnx-community/whisper-base", label: "Balanced, many languages", downloadMb: 77, multilingual: true },
-  { id: "small", repo: "onnx-community/whisper-small", label: "Most accurate, many languages", downloadMb: 249, multilingual: true },
+  {
+    id: "tiny.en",
+    repo: "onnx-community/whisper-tiny.en",
+    label: "Fast, English only",
+    downloadMb: 41,
+    multilingual: false,
+    windowSec: 28,
+  },
+  { id: "base", repo: "onnx-community/whisper-base", label: "Balanced, many languages", downloadMb: 77, multilingual: true, windowSec: 10 },
+  {
+    id: "small",
+    repo: "onnx-community/whisper-small",
+    label: "Most accurate, many languages",
+    downloadMb: 249,
+    multilingual: true,
+    windowSec: 10,
+  },
 ];
 
 /** The model every transcript is made with. */

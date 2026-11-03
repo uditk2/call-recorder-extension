@@ -148,17 +148,12 @@ export function createTranscriptsView({ container, transcription, findRecord, on
         });
     });
     dialog.append(
-      el("h2", { class: "dialog-title", text: "Allow reading your recordings", attrs: { id: "access-title" } }),
-      el("p", {
-        class: "muted",
-        text: `Your recordings are saved in ${where}. To make a transcript, allow this extension to read files in that folder. Chrome only lets an extension read a folder when you say so, and it asks once.${
-          record.location?.kind === "folder" ? "" : ' In the window that opens, choose the "Call Recordings" folder inside Downloads.'
-        }`,
-      }),
-      el("p", {
-        class: "faint",
-        text: "It only reads the recording you transcribe, and saves the transcript in the same folder as that recording. Nothing leaves your computer. You can change this later in Settings.",
-      }),
+      el("h2", { class: "dialog-title", text: "Allow access to your recordings", attrs: { id: "access-title" } }),
+      el("p", { text: `To make a transcript, Call Recorder needs to read ${where}.` }),
+      record.location?.kind === "folder"
+        ? null
+        : el("p", { class: "muted", text: 'Next, pick the "Call Recordings" folder inside Downloads.' }),
+      el("p", { class: "faint", text: "Everything stays on your computer." }),
       el("div", { class: "row dialog-actions" }, [allow, cancel]),
     );
     document.body.append(dialog);
