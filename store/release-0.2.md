@@ -6,7 +6,7 @@ Do not paste any of this into the store until the transcription branch is merged
 
 - **New package:** `npm run package` on the branch. About 28 MB unzipped, because it carries the ONNX Runtime WebAssembly file. The Whisper models are not in the package.
 - **Permissions:** none added. `tabCapture`, `offscreen`, `activeTab`, `downloads`, `storage` stay as they are. Host access stays on `meet.google.com`.
-- **Manifest:** two new keys, `cross_origin_embedder_policy` and `cross_origin_opener_policy`. They turn on the shared memory the model's threads need. They do not change what the extension can access.
+- **Manifest:** no new keys. Do not add `cross_origin_embedder_policy` or `cross_origin_opener_policy`: they stop tab capture from starting. The build check blocks them.
 - **Remote code:** still No. The model files are data (weights), not code. All code and WebAssembly are in the package.
 - **Network:** new. On the first Transcribe the library page downloads the chosen model from huggingface.co. Say so in the listing and in the privacy policy (the policy text is already updated in `store/privacy-policy.md`).
 - **Data usage:** unchanged. Nothing about the user is sent. A model download reveals the IP address to Hugging Face, like any download.

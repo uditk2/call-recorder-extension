@@ -75,7 +75,7 @@ try {
   await page.evaluate(() => localStorage.setItem("transcriptionHost", "http://localhost:8792/"));
   await page.reload();
 
-  check("the library page is cross-origin isolated, so model threads can run", await page.evaluate(() => self.crossOriginIsolated === true));
+  check("the library page is not cross-origin isolated (isolation breaks tab capture)", await page.evaluate(() => self.crossOriginIsolated === false));
   check("a saved recording has a Transcribe button", (await page.getByRole("button", { name: "Transcribe", exact: true }).count()) === 1);
 
   // ---- first run: downloads the model ----

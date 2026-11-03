@@ -75,10 +75,11 @@ This is the first time the extension would make a network request, if the model 
 - **Library:** a Transcribe button on saved recordings, and a Transcripts tab with Open, copy, save as text, save as subtitles (.srt), transcribe again and delete. Transcripts live in `chrome.storage.local`.
 - **The person picks the recording file.** A page cannot read a file in the Downloads folder by itself, so the form asks for it. Reading it straight from a chosen output folder is a follow up.
 - **Runs in the library page, not the offscreen document.** The model runs in ONNX Runtime's own worker, so the page stays responsive, but the tab has to stay open until it finishes.
-- **No new permission.** Hugging Face allows downloads from other origins, so no host permission is needed. The manifest gains `cross_origin_embedder_policy` and `cross_origin_opener_policy`, which turn on the shared memory the model's threads need.
+- **No new permission, and no manifest changes.** Hugging Face allows downloads from other origins, so no host permission is needed.
+- **The model runs on one thread.** Extra threads need the extension's pages to be cross-origin isolated (`cross_origin_embedder_policy` and `cross_origin_opener_policy` in the manifest). We tried it, and with those keys Chrome fails to start tab capture ("Error starting tab capture"). The keys apply to every extension page, including the recorder's offscreen document, so they are not allowed. `scripts/validate.mjs` now fails the build if they come back. Model speed on one thread is still fine (see below).
 - **Package size.** The package grows from under 1 MB to about 28 MB, mostly the ONNX Runtime WebAssembly file. The models are not in the package.
 
-Measured on a small two core test machine, tiny English: a 63 second Meet recording took 23 seconds in total, and 100 seconds of speech with long silences took 16 seconds. The base model took 36 seconds on the same recording and got the names and the sentence about the video right. Your own computer will differ, so measure on it.
+Measured on a small two core test machine, one model thread, tiny English: a 63 second Meet recording took 23 seconds in total, and 100 seconds of speech with long silences took 16 seconds. The base model took 36 seconds on the same recording and got the names and the sentence about the video right. Your own computer will differ, so measure on it.
 
 ## Still to do
 

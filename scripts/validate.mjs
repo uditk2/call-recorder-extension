@@ -16,6 +16,10 @@ const manifest = JSON.parse(readFileSync(`${DIST}/manifest.json`, "utf8"));
 // ---- identity and size limits ----
 if (manifest.manifest_version !== 3) fail("manifest_version must be 3.");
 if (!manifest.name || manifest.name.length > 75) fail("name is missing or longer than 75 characters.");
+// Isolating the extension's pages (for model threads) makes Chrome refuse to start tab capture. See docs/transcription-plan.md.
+if ("cross_origin_embedder_policy" in manifest || "cross_origin_opener_policy" in manifest) {
+  fail("The manifest isolates the extension's pages, which breaks tab capture. Remove cross_origin_embedder_policy and cross_origin_opener_policy.");
+}
 if (/\(dev\)/i.test(manifest.name)) fail("This is a development build. Use `npm run build`, not `build:dev`.");
 if (!manifest.description || manifest.description.length > 132) fail(`description is missing or longer than 132 characters (${manifest.description?.length}).`);
 if (!/^\d+(\.\d+){0,3}$/.test(manifest.version ?? "")) fail("version must be 1 to 4 dot-separated numbers.");

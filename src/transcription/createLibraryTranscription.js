@@ -14,8 +14,9 @@ export function createLibraryTranscription() {
     return createTransformersEngine({
       wasmPaths: chrome.runtime.getURL("transcribe/ort/"),
       remoteHost,
-      // One thread fewer than the processor has, so the page stays usable while it works.
-      threads: Math.max(1, Math.min(4, (navigator.hardwareConcurrency || 2) - 1)),
+      // Extra threads need a cross-origin isolated page, and isolating the extension's pages stops Chrome from starting tab capture
+      // (the recorder fails with "Error starting tab capture"). So the model runs on one thread, in a worker of its own.
+      threads: 1,
     });
   });
   const repository = new KeyValueTranscriptRepository(new ChromeKeyValueStore());
