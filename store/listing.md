@@ -4,11 +4,15 @@ Copy each block into the matching field of the dashboard.
 
 ## Name (75 characters at most)
 
-Call Recorder: Record Google Meet and Web Calls Locally
+Comes from the package (`manifest.json`), so the dashboard shows it locked:
+
+Call Recorder for Google Meet
 
 ## Summary (132 characters at most)
 
-Record Google Meet and web call tabs with your mic and shared screen sound, on your own device. No account, nothing uploaded.
+Also comes from the package (`description` in `manifest.json`), locked in the dashboard:
+
+Record Google Meet and other web call tabs, your mic and shared screen sound, on your own device. Nothing is uploaded.
 
 ## Category
 
@@ -20,7 +24,7 @@ English
 
 ## Description
 
-Call Recorder is a free call recorder for Google Meet and other video calls in a Chrome tab. It records the call, your microphone and the sound of any screen or tab you share, into one MP4 or WebM file on your own computer.
+Call Recorder for Google Meet is a free call recorder that also works with other video calls in a Chrome tab. It records the call, your microphone and the sound of any screen or tab you share, into one MP4 or WebM file on your own computer.
 
 No account. No recording limit. No bot in the call. Nothing is uploaded: there is no server, no analytics and no sign-in. It is open source (AGPL-3.0). Recordings go to your Downloads folder, or to a folder you choose.
 
@@ -38,7 +42,7 @@ Works with web calls in Chrome
 • Konvene: everyone in the call sees a badge with your name while you record.
 • Google Meet and any other call in a browser tab: the extension asks you to confirm you have told everyone before it starts.
 
-Please record responsibly. In many places you need everyone's consent to record a call. Call Recorder makes that visible, but the responsibility is yours.
+Please record responsibly. In many places you need everyone's consent to record a call. Call Recorder for Google Meet makes that visible, but the responsibility is yours.
 
 Call Recorder is not affiliated with, or endorsed by, Google or any call service named above.
 

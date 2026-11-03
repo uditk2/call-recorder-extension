@@ -1,6 +1,6 @@
 {
   "name": "call-recorder-extension",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "Chrome extension that records Google Meet, Konvene and other WebRTC call tabs, your microphone and shared screen sound, on your own device. No server.",
   "license": "AGPL-3.0-only",

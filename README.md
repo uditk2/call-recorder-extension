@@ -1,8 +1,8 @@
-<p align="center"><img src="static/icons/icon-128.png" width="96" height="96" alt="Call Recorder logo"></p>
+<p align="center"><img src="static/icons/icon-128.png" width="96" height="96" alt="Call Recorder for Google Meet logo"></p>
 
-# Call Recorder
+# Call Recorder for Google Meet
 
-A free, open source Chrome extension that records web calls (Google Meet and any call in a browser tab) to a file on your own computer. It captures the call, your microphone and the sound of a screen or tab you share. No server, no account, nothing uploaded.
+Call Recorder for Google Meet is a free, open source Chrome extension that records Google Meet and any other web call in a browser tab, to a file on your own computer. It captures the call, your microphone and the sound of a screen or tab you share. No server, no account, nothing uploaded.
 
 - Clear voice, with noise reduction that runs on your computer.
 - Small files, and long calls never fill your memory.
