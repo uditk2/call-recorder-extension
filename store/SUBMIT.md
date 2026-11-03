@@ -13,14 +13,15 @@ Everything that can be prepared is prepared. The steps below need you, because t
 
 ## Submit
 
-1. **Developer account.** Open the [Chrome Web Store developer dashboard](https://chrome.google.com/webstore/devconsole), sign in with the Google account that will own the extension, turn on 2-Step Verification for it, accept the terms and pay the one-time registration fee of US$5. It covers every extension you publish later.
-2. **Trader status.** The dashboard asks you to declare whether you are a trader or a non-trader (an EU rule). A free open source extension published by an individual is usually a non-trader, but it is your own legal call. A trader's name, address and phone number are shown publicly on the listing.
-3. Run `npm run package`. In the dashboard choose **Add new item** and upload `store/package/call-recorder-<version>.zip`.
-4. **Store listing:** copy the text from `store/listing.md` (name, summary, description, category, language). Upload `store/screenshots/*.png` (1280 x 800, up to 5) and `store/promo/small-tile-440x280.png`. The icon (128 x 128) comes from the package. A marquee image (1400 x 560) is optional.
-5. **Privacy practices:** paste the single purpose and each permission justification from `store/permissions.md`, including the page scripts on Google Meet and Konvene. Answer the data usage questions the same way, tick the certifications, and add the privacy policy URL.
-6. **Test instructions:** paste the "Notes for the reviewer" section of `store/permissions.md`.
-7. **Distribution:** choose public, unlisted or private, and the regions.
-8. **Submit for review**, and choose whether to publish automatically once it is approved.
+The dashboard cannot be driven by a script (Chrome blocks it), so this part is by hand. It takes about 15 minutes. Every text block is already written.
+
+1. **Developer account.** Done once: sign in at the [Chrome Web Store developer dashboard](https://chrome.google.com/webstore/devconsole) with the Google account that will own the extension, turn on 2-Step Verification, accept the terms, pay the one-time US$5 fee, and declare trader or non-trader (an EU rule, your own legal call). A new account can publish 2 extensions.
+2. Run `npm run package` (or use the zip already in `store/package/`). In the dashboard choose **Add new item** and upload `store/package/call-recorder-<version>.zip`.
+3. **Store listing tab.** Paste from `store/listing.md`: name, summary, description, category (Productivity), language (English). Upload the icon (it is in the package), `store/screenshots/*.png` (1280 x 800, up to 5) and `store/promo/small-tile-440x280.png`. Set the support URL, homepage URL and privacy policy URL from the "Links" block of `store/listing.md`.
+4. **Privacy practices tab.** From `store/permissions.md` paste, in order: the single purpose, then the justification under each permission heading (`tabCapture`, `offscreen`, `activeTab`, `downloads`, `storage`), then the host permission justification (the section about page scripts on Google Meet and Konvene). Answer "no" to remote code. In the data usage questions tick what `store/permissions.md` says, and tick all three certifications. Add the privacy policy URL.
+5. **Test instructions tab.** Paste the "Notes for the reviewer" section of `store/permissions.md`. No account or login is needed.
+6. **Distribution tab.** Choose public, all regions, free.
+7. **Submit for review.** Choose to publish automatically once approved, or to publish it yourself.
 
 ## What to expect
 
