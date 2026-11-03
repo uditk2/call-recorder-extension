@@ -20,9 +20,9 @@ English
 
 ## Description
 
-Call Recorder is a free call recorder for Google Meet and other video calls in a Chrome tab. It saves the call to a single MP4 or WebM file on your own computer: the call tab (everyone you hear and see), your microphone and the sound of any screen or tab shared in the call. It cleans up your voice with noise reduction and keeps the file small.
+Call Recorder is a free call recorder for Google Meet and other video calls in a Chrome tab. It records the call, your microphone and the sound of any screen or tab you share, into one MP4 or WebM file on your own computer.
 
-Nothing leaves your device. There is no account, no server, no analytics and no upload. It is open source (AGPL-3.0). Recordings go to your Downloads folder, or to a folder you choose.
+No account. No recording limit. No bot in the call. Nothing is uploaded: there is no server, no analytics and no sign-in. It is open source (AGPL-3.0). Recordings go to your Downloads folder, or to a folder you choose.
 
 What you get
 • One file with the video of the tab, the other people's voices and yours.
@@ -34,7 +34,7 @@ What you get
 • If the browser closes in the middle of a call, the recording is kept and you can save it from the library.
 
 Works with web calls in Chrome
-• Screen and tab sharing: when someone shares in the call on Google Meet or Konvene, the sound of the share is recorded too.
+• Screen and tab sharing: when someone shares in the call on Google Meet or Konvene, the sound of the share is recorded too, while it is shared.
 • Konvene: everyone in the call sees a badge with your name while you record.
 • Google Meet and any other call in a browser tab: the extension asks you to confirm you have told everyone before it starts.
 
