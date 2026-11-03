@@ -118,3 +118,9 @@ progress { width: 100%; height: 10px; accent-color: var(--accent); }
 .seg:last-child { border-bottom: 0; }
 .seg time { color: var(--ink-3); font-variant-numeric: tabular-nums; font-size: .85rem; padding-top: .1rem; }
 .transcript-text { max-height: 60vh; overflow: auto; }
+
+/* ---------- pop-up ---------- */
+dialog.dialog { border: 0; border-radius: 16px; padding: 1.25rem 1.4rem; max-width: 460px; width: calc(100% - 2rem); background: var(--surface); color: var(--ink); box-shadow: 0 24px 60px -12px rgba(16, 38, 31, .35); display: grid; gap: .7rem; }
+dialog.dialog::backdrop { background: rgba(16, 38, 31, .45); }
+.dialog-title { font-size: 1.2rem; }
+.dialog-actions { margin-top: .4rem; }

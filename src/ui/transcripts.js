@@ -119,37 +119,50 @@ export function createTranscriptsView({ container, transcription, findRecord, on
     showAccessPrompt(record);
   }
 
+  /** A pop-up over the library that asks to read the recordings folder. Closing it leaves the library as it was. */
   function showAccessPrompt(record) {
+    const where = record.location?.kind === "folder" ? `"${record.location.folderName}"` : "Downloads/Call Recordings";
+    const dialog = el("dialog", { class: "dialog", attrs: { "aria-labelledby": "access-title" } });
     const allow = el("button", { class: "btn primary", text: "Allow access" });
+    const cancel = el("button", { class: "btn", text: "Cancel" });
+    const close = () => {
+      dialog.close();
+      dialog.remove();
+    };
+    cancel.addEventListener("click", close);
+    dialog.addEventListener("cancel", () => dialog.remove()); // the Escape key
     allow.addEventListener("click", () => {
       allow.disabled = true;
       onClearError();
-      // The prompt and the folder picker only open from a click, so this runs straight from the button.
+      // Chrome's folder prompt only opens from a click, so this runs straight from the button.
       transcription.access
         .grant(record)
-        .then((root) => run(record, root))
+        .then((root) => {
+          close();
+          return run(record, root);
+        })
         .catch((e) => {
           allow.disabled = false;
           onError(e);
+          close();
         });
     });
-    const where = record.location?.kind === "folder" ? `"${record.location.folderName}"` : "Downloads/Call Recordings";
-    container.replaceChildren(
-      el("section", { class: "card stack" }, [
-        el("div", { class: "title clip", text: `Transcribe: ${record.title}` }),
-        el("p", {
-          class: "muted",
-          text: `Your recordings are saved in ${where}. To make a transcript, allow this extension to read files in that folder. Chrome only lets an extension read a folder when you say so, and it asks once.${
-            record.location?.kind === "folder" ? "" : ' In the window that opens, choose the "Call Recordings" folder inside Downloads.'
-          }`,
-        }),
-        el("p", {
-          class: "faint",
-          text: "It only reads the recording you transcribe, and saves the transcript in the same folder as that recording. Nothing leaves your computer.",
-        }),
-        el("div", { class: "row" }, [allow, el("button", { class: "btn", text: "Back", on: { click: () => void showList() } })]),
-      ]),
+    dialog.append(
+      el("h2", { class: "dialog-title", text: "Allow reading your recordings", attrs: { id: "access-title" } }),
+      el("p", {
+        class: "muted",
+        text: `Your recordings are saved in ${where}. To make a transcript, allow this extension to read files in that folder. Chrome only lets an extension read a folder when you say so, and it asks once.${
+          record.location?.kind === "folder" ? "" : ' In the window that opens, choose the "Call Recordings" folder inside Downloads.'
+        }`,
+      }),
+      el("p", {
+        class: "faint",
+        text: "It only reads the recording you transcribe, and saves the transcript in the same folder as that recording. Nothing leaves your computer. You can change this later in Settings.",
+      }),
+      el("div", { class: "row dialog-actions" }, [allow, cancel]),
     );
+    document.body.append(dialog);
+    dialog.showModal();
   }
 
   async function run(record, root) {

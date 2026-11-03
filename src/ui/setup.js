@@ -69,7 +69,7 @@ async function renderTranscripts() {
   setText(ui.transcriptFolder, folderName ? `the folder "${folderName}"` : `Downloads/${CONFIG.downloadsFolder}`);
   const on = await access.isEnabled({ folderName }).catch(() => false);
   chip(ui.transcriptsStatus, on ? "Allowed" : "Not allowed yet", on ? "ok" : "");
-  setText(ui.allowTranscripts, on ? "Check again" : "Allow reading recordings");
+  setText(ui.allowTranscripts, on ? (folderName ? "Check again" : "Choose the folder again") : "Allow reading recordings");
 }
 async function allowTranscripts() {
   show(ui.transcriptsError, false);

@@ -95,8 +95,9 @@ try {
   // ---- before access is allowed: one clear step, no picking ----
   await page.getByRole("button", { name: "Transcribe", exact: true }).click();
   await page.getByRole("button", { name: "Allow access" }).waitFor({ timeout: 15_000 });
-  const prompt = await page.locator("#pane-transcripts").innerText();
-  check("without access it names the folder and asks to allow reading it, once", /Downloads\/Call Recordings/.test(prompt) && /read files in that folder/.test(prompt) && /once/.test(prompt));
+  check("the access request is a pop-up over the library", await page.locator("dialog.dialog[open]").isVisible());
+  const prompt = await page.locator("dialog.dialog").innerText();
+  check("without access it names the folder and asks to allow reading it, once", /Downloads\/Call Recordings/.test(prompt) && /read files in that folder/.test(prompt) && /once/.test(prompt) && /Settings/.test(prompt));
   check("there is nothing to choose: no file, model or language fields", (await page.locator("#transcribe-file, #transcribe-model, #transcribe-language").count()) === 0);
 
   // ---- the person allows the folder (here: a private folder that already holds the recording) ----
@@ -121,7 +122,8 @@ try {
     });
     db.close();
   }, [FOLDER]);
-  await page.getByRole("button", { name: "Back" }).click();
+  await page.getByRole("button", { name: "Cancel" }).click();
+  check("the request is a pop-up, and cancelling leaves the library as it was", (await page.locator("dialog[open]").count()) === 0);
 
   // ---- first transcript: starts by itself, explains the one-time download ----
   await page.getByRole("tab", { name: "Recordings" }).click();
