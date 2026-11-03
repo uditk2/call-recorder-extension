@@ -47,5 +47,5 @@ export const CHANNEL = { background: "background", offscreen: "offscreen" };
  * @property {Call<{ shareId: string }, None>} engine/share-ended
  * @property {Call<{ stagingName: string; fileName: string; mimeType: string }, ExportedFile>} engine/export
  * @property {Call<{ stagingName: string; blobUrl?: string; deleteStaging: boolean }, None>} engine/release
- * @property {Call<{ stagingName: string; fileName: string }, { folderName: string }>} engine/write-to-folder
+ * @property {Call<{ stagingName: string; fileName: string; folder: string }, { folderName: string; relativePath: string[] }>} engine/write-to-folder
  */

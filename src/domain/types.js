@@ -33,7 +33,8 @@ export const DEFAULT_SETTINGS = { noiseReduction: true, folderName: null, setupD
  */
 
 /**
- * @typedef {{ kind: "downloads"; downloadId: number; path: string } | { kind: "folder"; folderName: string }} SavedLocation
+ * relativePath is where the file sits inside the recordings folder (a folder per recording, then the file). Older records lack it.
+ * @typedef {{ kind: "downloads"; downloadId: number; path: string; relativePath?: string[] } | { kind: "folder"; folderName: string; relativePath?: string[] }} SavedLocation
  */
 
 /**
@@ -51,6 +52,7 @@ export const DEFAULT_SETTINGS = { noiseReduction: true, folderName: null, setupD
  * @property {string} tabTitle
  * @property {number} tabId
  * @property {string} stagingName Name of the file in the private file system while it is being written.
+ * @property {string} [folder] Name of the folder this recording is saved in, inside the recordings folder. Older records have none.
  * @property {string} fileName Name the finished file gets in the output folder.
  * @property {string} mimeType
  * @property {SavedLocation} [location]

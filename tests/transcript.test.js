@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { formatClock, placeSegments, toPlainText, toSrt, transcriptFileName } from "../src/domain/transcription/transcript.js";
-import { TRANSCRIPTION_MODELS, modelById, recommendModel } from "../src/domain/transcription/models.js";
+import { DEFAULT_MODEL_ID, modelById } from "../src/domain/transcription/models.js";
 
 describe("placing segments on the recording's clock", () => {
   it("adds the window's start to every time", () => {
@@ -65,15 +65,8 @@ describe("models", () => {
     expect(modelById("tiny.en").multilingual).toBe(false);
     expect(() => modelById("nope")).toThrow();
   });
-  it("suggests a small model on a small machine and a bigger one on a big machine", () => {
-    expect(recommendModel({ deviceMemoryGb: 2, cores: 4 })).toBe("tiny.en");
-    expect(recommendModel({ deviceMemoryGb: 4, cores: 4 })).toBe("base");
-    expect(recommendModel({ deviceMemoryGb: 8, cores: 4 })).toBe("base");
-    expect(recommendModel({ deviceMemoryGb: 8, cores: 12 })).toBe("small");
-  });
-  it("only suggests models that exist", () => {
-    for (const machine of [{ deviceMemoryGb: 1 }, {}, { deviceMemoryGb: 8, cores: 16 }]) {
-      expect(TRANSCRIPTION_MODELS.map((m) => m.id)).toContain(recommendModel(machine));
-    }
+  it("uses the multilingual base model for everyone, so the language is found automatically", () => {
+    expect(DEFAULT_MODEL_ID).toBe("base");
+    expect(modelById(DEFAULT_MODEL_ID).multilingual).toBe(true);
   });
 });

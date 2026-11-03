@@ -43,9 +43,9 @@ export class OffscreenRecorderGateway {
     await this.ensure();
     await this.call("engine/release", { stagingName: file.stagingName, blobUrl: file.blobUrl, deleteStaging });
   }
-  async writeToFolder(stagingName, fileName) {
+  async writeToFolder(stagingName, fileName, folder) {
     await this.ensure();
-    return this.call("engine/write-to-folder", { stagingName, fileName });
+    return this.call("engine/write-to-folder", { stagingName, fileName, folder });
   }
   // ---- the offscreen document ----
   async hasDocument() {

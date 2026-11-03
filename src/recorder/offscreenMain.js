@@ -62,7 +62,8 @@ serve(
       if (deleteStaging) await staging.remove(stagingName);
       return {};
     },
-    "engine/write-to-folder": async ({ stagingName, fileName }) => folder.write(await staging.read(stagingName), fileName),
+    "engine/write-to-folder": async ({ stagingName, fileName, folder: recordingFolder }) =>
+      folder.write(await staging.read(stagingName), fileName, recordingFolder),
   },
   chromeRuntime,
 );

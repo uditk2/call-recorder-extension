@@ -26,7 +26,7 @@ function memoryStore() {
   const data = new Map();
   return { get: async (k) => data.get(k), set: async (k, v) => void data.set(k, structuredClone(v)) };
 }
-function setup({ pcm }) {
+function setup({ pcm, files }) {
   const calls = { prepared: [], windows: [] };
   let now = 1_000;
   const engine = {
@@ -46,6 +46,7 @@ function setup({ pcm }) {
     engine,
     repository,
     clock: { now: () => (now += 1000) },
+    files,
   });
   return { service, repository, calls };
 }
@@ -74,6 +75,37 @@ describe("TranscriptionService", () => {
     const last = events.at(-1);
     expect(last).toMatchObject({ phase: "transcribing", done: 2, total: 2, etaMs: 0 });
     expect(events.filter((e) => e.phase === "transcribing")[0].etaMs).toBeGreaterThan(0);
+  });
+
+  it("uses the one default model and automatic language when nothing is chosen", async () => {
+    const { service, calls } = setup({ pcm: join(quiet(2), tone(5), quiet(2)) });
+    const t = await service.run({ record, file: new Blob() });
+    expect(calls.prepared).toEqual(["base"]);
+    expect(calls.windows[0].options.language).toBeUndefined();
+    expect(t.language).toBe("auto");
+  });
+
+  it("saves the transcript files next to the recording and remembers their names", async () => {
+    const saved = [];
+    const files = { save: async (r, t) => (saved.push([r.id, t.segments.length]), ["transcript.txt", "transcript.srt"]) };
+    const { service, repository } = setup({ pcm: join(quiet(2), tone(5), quiet(2)), files });
+    const t = await service.run({ record, file: new Blob() });
+    expect(saved).toEqual([["r1", 1]]);
+    expect(t.files).toEqual(["transcript.txt", "transcript.srt"]);
+    expect((await repository.get("r1")).files).toEqual(["transcript.txt", "transcript.srt"]);
+  });
+
+  it("keeps the transcript when its files cannot be saved, and says why", async () => {
+    const files = {
+      save: async () => {
+        throw new Error("The recordings folder is not available.");
+      },
+    };
+    const { service, repository } = setup({ pcm: join(quiet(2), tone(5), quiet(2)), files });
+    const t = await service.run({ record, file: new Blob() });
+    expect(t.files).toBeUndefined();
+    expect(t.filesError).toContain("not available");
+    expect((await repository.get("r1")).segments).toHaveLength(1);
   });
 
   it("lets the engine detect the language when the person picked automatic", async () => {

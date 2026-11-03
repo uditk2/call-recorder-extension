@@ -93,7 +93,7 @@ export class FakeRecorder {
     this.released.push({ stagingName: file.stagingName, deleteStaging });
   }
   async writeToFolder() {
-    return { folderName: "Calls" };
+    return { folderName: "Calls", relativePath: ["x"] };
   }
 }
 export class FakeOutput {
@@ -102,7 +102,7 @@ export class FakeOutput {
   async write(file) {
     if (this.fail) throw new Error("disk full");
     this.written.push(file);
-    return { kind: "downloads", downloadId: 9, path: `/Downloads/Call Recordings/${file.fileName}` };
+    return { kind: "downloads", downloadId: 9, path: `/Downloads/Call Recordings/${file.folder}/${file.fileName}` };
   }
 }
 export class FakeFiles {

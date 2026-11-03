@@ -5,8 +5,8 @@ export class FolderOutputWriter {
     this.recorder = recorder;
   }
   async write(file) {
-    const { folderName } = await this.recorder.writeToFolder(file.stagingName, file.fileName);
-    return { kind: "folder", folderName };
+    const { folderName, relativePath } = await this.recorder.writeToFolder(file.stagingName, file.fileName, file.folder ?? "");
+    return { kind: "folder", folderName, relativePath };
   }
 }
 /** Tries the first writer, and on any failure uses the second. Same interface as both, so callers never know. */

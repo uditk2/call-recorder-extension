@@ -46,6 +46,7 @@
  * @typedef {object} ExportedFile
  * @property {string} stagingName
  * @property {string} fileName
+ * @property {string} [folder] The recording's own folder, inside the recordings folder.
  * @property {string} mimeType
  * @property {number} sizeBytes
  * @property {string} blobUrl Object URL for the file. Only valid until released.
@@ -82,7 +83,7 @@
  * @property {(shareId: string) => Promise<void>} shareEnded
  * @property {(stagingName: string, fileName: string, mimeType: string) => Promise<ExportedFile>} exportFile Makes a staged file readable by URL.
  * @property {(file: { stagingName: string; blobUrl?: string }, deleteStaging: boolean) => Promise<void>} release Frees the URL, and deletes the staged file when it has been saved.
- * @property {(stagingName: string, fileName: string) => Promise<{ folderName: string }>} writeToFolder
+ * @property {(stagingName: string, fileName: string, folder: string) => Promise<{ folderName: string; relativePath: string[] }>} writeToFolder
  */
 
 export {};

@@ -8,7 +8,9 @@ Do not paste any of this into the store until the transcription branch is merged
 - **Permissions:** none added. `tabCapture`, `offscreen`, `activeTab`, `downloads`, `storage` stay as they are. Host access stays on `meet.google.com`.
 - **Manifest:** no new keys. Do not add `cross_origin_embedder_policy` or `cross_origin_opener_policy`: they stop tab capture from starting. The build check blocks them.
 - **Remote code:** still No. The model files are data (weights), not code. All code and WebAssembly are in the package.
-- **Network:** new. On the first Transcribe the library page downloads the chosen model from huggingface.co. Say so in the listing and in the privacy policy (the policy text is already updated in `store/privacy-policy.md`).
+- **Network:** new. On the first Transcribe the library page downloads the speech model (about 77 MB) from huggingface.co, once. Say so in the listing and in the privacy policy (the policy text is already updated in `store/privacy-policy.md`).
+- **Folder access:** new, but it is not a manifest permission. The first Transcribe asks the person to allow the "Call Recordings" folder in Chrome's own folder prompt. Mention it in the reviewer notes.
+- **Layout:** new recordings are saved in a folder of their own (`Call Recordings/call-.../call-....mp4`), and the transcript is saved beside the video as transcript.txt and transcript.srt. Older recordings stay where they are.
 - **Data usage:** unchanged. Nothing about the user is sent. A model download reveals the IP address to Hugging Face, like any download.
 
 ## Single purpose (still true)
@@ -19,11 +21,11 @@ Record the tab you choose, plus your microphone and any screen or tab you share 
 
 Add under "What you get":
 
-- Transcripts on your own computer. Press Transcribe on a recording and get the text with timestamps. The speech model is downloaded once, then it works offline. Copy it, or save it as text or subtitles. Nothing is uploaded.
+- Transcripts on your own computer. Press Transcribe on a recording and get the text with timestamps, saved in the recording's folder. The speech model (about 77 MB) is downloaded once, then it works offline. Nothing is uploaded.
 
 ## Reviewer notes, added
 
-Transcribe: open the library page from the extension popup, press Transcribe on a saved recording, choose the recording file, and press Start. The first time, the model downloads from huggingface.co. The speech model runs in the page. No audio or text is sent anywhere.
+Transcribe: record a short call or tab first, then open the library page from the extension popup and press Transcribe on the recording. The first time, Chrome asks to allow the "Call Recordings" folder in Downloads (pick that folder), and the speech model downloads once from huggingface.co. The model runs in the page. No audio or text is sent anywhere.
 
 ## Before release
 

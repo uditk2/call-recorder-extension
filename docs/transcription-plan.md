@@ -69,11 +69,13 @@ This is the first time the extension would make a network request, if the model 
 ## What was built (branch `transcription`)
 
 - **Engine changed from whisper.cpp to Transformers.js.** Both run the same Whisper model in the browser. We timed both in the same real Chromium extension page on the same 14 second clip with the tiny English model: whisper.cpp WebAssembly took about 28 seconds, Transformers.js (ONNX Runtime Web, 8 bit) about 4. Engines stay swappable behind `TranscriptionEngine`, so whisper.cpp can come back if it gets faster.
-- **Models** (8 bit ONNX, from huggingface.co, downloaded once and kept in the browser's cache): tiny English (41 MB), base multilingual (77 MB), small multilingual (249 MB). The form suggests one by the computer's memory and cores, and the person can change it. Multilingual models detect the language by themselves, with a manual override.
+- **Model** (8 bit ONNX, from huggingface.co, downloaded once and kept in the browser's cache): base multilingual (77 MB), for everyone. The tiny English (41 MB) and small multilingual (249 MB) entries stay in the catalog so the choice can change in one place.
 - **Silence is skipped.** `speechPlanner` measures the loudness of the audio, finds speech, and packs it into windows of at most 28 seconds, cut at pauses. Each window is sent to Whisper alone, and times are put back on the recording's own clock. This replaced chunks with overlap, because windows cut at pauses need no merging.
 - **Progress, a time estimate and Stop** work window by window.
 - **Library:** a Transcribe button on saved recordings, and a Transcripts tab with Open, copy, save as text, save as subtitles (.srt), transcribe again and delete. Transcripts live in `chrome.storage.local`.
-- **The person picks the recording file.** A page cannot read a file in the Downloads folder by itself, so the form asks for it. Reading it straight from a chosen output folder is a follow up.
+- **Nothing to choose.** One model for everyone (multilingual base, 77 MB) that detects the language by itself. Pressing Transcribe starts at once. A page cannot read Downloads by itself, so the first time Chrome asks the person to allow the "Call Recordings" folder (one prompt, kept afterwards). Recordings saved to a chosen output folder use that folder's access.
+- **A folder for each recording.** New recordings are saved as `Call Recordings/call-.../call-....mp4`, and the transcript is saved in the same folder as `transcript.txt` and `transcript.srt`. Older recordings stay where they are and get `<name>-transcript.txt` beside them.
+- **The one-time download is explained** on the page when it happens: the model is needed so the recording can be turned into text on the computer instead of being uploaded.
 - **Runs in the library page, not the offscreen document.** The model runs in ONNX Runtime's own worker, so the page stays responsive, but the tab has to stay open until it finishes.
 - **No new permission, and no manifest changes.** Hugging Face allows downloads from other origins, so no host permission is needed.
 - **The model runs on one thread.** Extra threads need the extension's pages to be cross-origin isolated (`cross_origin_embedder_policy` and `cross_origin_opener_policy` in the manifest). We tried it, and with those keys Chrome fails to start tab capture ("Error starting tab capture"). The keys apply to every extension page, including the recorder's offscreen document, so they are not allowed. `scripts/validate.mjs` now fails the build if they come back. Model speed on one thread is still fine (see below).
@@ -83,7 +85,6 @@ Measured on a small two core test machine, one model thread, tiny English: a 63 
 
 ## Still to do
 
-- Read the recording straight from the chosen output folder, without the file picker.
 - Run in the background so the library tab can be closed.
 - Try WebGPU as a faster path with WebAssembly as the fallback.
 - Very long calls: decoding a whole file at once uses memory. Decode in pieces for calls of several hours.

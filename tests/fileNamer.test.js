@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { buildFileName, buildStagingName, containerMimeType, extensionFromMime, slug } from "../src/domain/fileNamer.js";
+import {
+  buildFileName,
+  buildFolderName,
+  buildStagingName,
+  containerMimeType,
+  extensionFromMime,
+  relativeToRoot,
+  slug,
+} from "../src/domain/fileNamer.js";
 import { formatBytes, formatDuration } from "../src/shared/format.js";
 describe("fileNamer", () => {
   it("builds a dated, site-tagged file name in local time", () => {
@@ -11,6 +19,24 @@ describe("fileNamer", () => {
     const startedAt = new Date(2026, 0, 1, 0, 0).getTime();
     expect(buildFileName({ startedAt, siteId: "../../x", extension: "webm" })).toBe("call-2026-01-01-0000-x.webm");
     expect(buildFileName({ startedAt, siteId: "***", extension: "webm" })).toBe("call-2026-01-01-0000-call.webm");
+  });
+  it("names the folder of a recording like its file, without the extension", () => {
+    const startedAt = new Date(2026, 10, 2, 9, 5).getTime();
+    expect(buildFolderName({ startedAt, siteId: "google-meet" })).toBe("call-2026-11-02-0905-google-meet");
+    expect(buildFileName({ startedAt, siteId: "google-meet", extension: "webm" })).toBe(
+      `${buildFolderName({ startedAt, siteId: "google-meet" })}.webm`,
+    );
+  });
+  it("finds where a download sits inside the recordings folder", () => {
+    expect(relativeToRoot("/Users/me/Downloads/Call Recordings/call-a/call-a.mp4", "Call Recordings")).toEqual(["call-a", "call-a.mp4"]);
+    expect(relativeToRoot("C:\\Users\\me\\Downloads\\Call Recordings\\call-a\\call-a.mp4", "Call Recordings")).toEqual([
+      "call-a",
+      "call-a.mp4",
+    ]);
+    // An older recording sits straight in the folder.
+    expect(relativeToRoot("/Users/me/Downloads/Call Recordings/call-old.mp4", "Call Recordings")).toEqual(["call-old.mp4"]);
+    // The folder was renamed or moved: the file name is all we can say.
+    expect(relativeToRoot("/Users/me/Elsewhere/call-a.mp4", "Call Recordings")).toEqual(["call-a.mp4"]);
   });
   it("gives staging files a stable name from the record id", () => {
     expect(buildStagingName("A1/B2")).toBe("rec-a1-b2");

@@ -1,4 +1,5 @@
-import { AppError } from "../domain/errors.js";
+import { AppError, messageOf } from "../domain/errors.js";
+import { DEFAULT_MODEL_ID } from "../domain/transcription/models.js";
 import { planWindows } from "../domain/transcription/speechPlanner.js";
 import { placeSegments } from "../domain/transcription/transcript.js";
 
@@ -10,22 +11,22 @@ export const SAMPLE_RATE = 16_000;
  */
 export class TranscriptionService {
   d;
-  /** @param {{ decoder: import("../domain/transcription/ports.js").AudioDecoder, engine: import("../domain/transcription/ports.js").TranscriptionEngine, repository: import("../domain/transcription/ports.js").TranscriptRepository, clock: import("../domain/ports.js").Clock }} deps */
+  /** @param {{ decoder: import("../domain/transcription/ports.js").AudioDecoder, engine: import("../domain/transcription/ports.js").TranscriptionEngine, repository: import("../domain/transcription/ports.js").TranscriptRepository, clock: import("../domain/ports.js").Clock, files?: import("../domain/transcription/ports.js").TranscriptFiles }} deps */
   constructor(deps) {
     this.d = deps;
   }
 
   /**
    * @param {object} job
-   * @param {{ id: string; title: string }} job.record
+   * @param {{ id: string; title: string }} job.record The recording, with whatever the file store needs to find its folder.
    * @param {Blob} job.file The recording's audio or video file.
-   * @param {string} job.modelId
-   * @param {string} [job.language] A language code, or "auto".
+   * @param {string} [job.modelId] Defaults to the one model every transcript uses.
+   * @param {string} [job.language] A language code. Without one the model detects the language itself.
    * @param {(p: import("../domain/transcription/ports.js").TranscriptionProgress) => void} [job.onProgress]
    * @param {AbortSignal} [job.signal] Aborting stops after the window that is running.
    * @returns {Promise<import("../domain/transcription/transcript.js").Transcript>}
    */
-  async run({ record, file, modelId, language = "auto", onProgress = () => {}, signal }) {
+  async run({ record, file, modelId = DEFAULT_MODEL_ID, language = "auto", onProgress = () => {}, signal }) {
     const stopIfAborted = () => {
       if (signal?.aborted) throw new AppError("cancelled", "Transcription stopped.");
     };
@@ -68,6 +69,14 @@ export class TranscriptionService {
       durationSec: plan.totalSec,
       segments,
     };
+    // The text files are for the person to find. If they cannot be written the transcript is still kept and shown.
+    if (this.d.files) {
+      try {
+        transcript.files = await this.d.files.save(record, transcript);
+      } catch (e) {
+        transcript.filesError = messageOf(e);
+      }
+    }
     await this.d.repository.save(transcript);
     return transcript;
   }

@@ -24,6 +24,12 @@
  */
 
 /**
+ * Saves a finished transcript where the person will find it. The returned names are the files that were written.
+ * @typedef {object} TranscriptFiles
+ * @property {(record: object, transcript: import("./transcript.js").Transcript) => Promise<string[]>} save
+ */
+
+/**
  * What the person sees while a transcript is made.
  * @typedef {{ phase: "decoding" }
  *   | { phase: "model"; loadedBytes: number; totalBytes: number }

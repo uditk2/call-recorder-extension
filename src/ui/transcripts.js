@@ -1,8 +1,9 @@
-// The Transcripts tab of the library: make a transcript from a recording, read it, copy it, save it as text or subtitles.
-import { formatBytes, formatDuration } from "../shared/format.js";
+// The Transcripts tab of the library: make a transcript of a recording, read it, copy it, save it as text or subtitles.
+// There is nothing to choose. The recording is found by itself, and the transcript is saved in the recording's own folder.
 import { messageOf } from "../domain/errors.js";
-import { TRANSCRIPTION_LANGUAGES, TRANSCRIPTION_MODELS, modelById, recommendModel } from "../domain/transcription/models.js";
+import { DEFAULT_MODEL_ID, modelById } from "../domain/transcription/models.js";
 import { formatClock, toPlainText, toSrt, transcriptFileName } from "../domain/transcription/transcript.js";
+import { formatBytes, formatDuration } from "../shared/format.js";
 import { isModelCached } from "../transcription/transformersCache.js";
 import { el, setText } from "./dom.js";
 
@@ -20,11 +21,13 @@ function eta(ms) {
   return ms === null || ms === undefined ? "" : ms < 60_000 ? "Less than a minute left." : `About ${Math.ceil(ms / 60_000)} min left.`;
 }
 
+const MODEL = modelById(DEFAULT_MODEL_ID);
+
 /**
  * @param {object} deps
  * @param {HTMLElement} deps.container
  * @param {ReturnType<typeof import("../transcription/createLibraryTranscription.js").createLibraryTranscription>} deps.transcription
- * @param {(id: string) => Promise<{ id: string; title: string; fileName?: string; location?: import("../domain/types.js").SavedLocation } | undefined>} deps.findRecord
+ * @param {(id: string) => Promise<object | undefined>} deps.findRecord The recording as the library knows it: id, title, folder, file name, location.
  * @param {(error: unknown) => void} deps.onError
  * @param {() => void} deps.onClearError
  */
@@ -39,7 +42,6 @@ export function createTranscriptsView({ container, transcription, findRecord, on
         el("div", { class: "meta" }, [
           el("span", { text: new Date(t.createdAt).toLocaleString() }),
           el("span", { text: formatDuration(t.durationSec * 1000) }),
-          el("span", { text: modelById(t.model).label }),
           el("span", { text: `${t.segments.length} lines` }),
         ]),
         el("div", { class: "row" }, [
@@ -58,7 +60,6 @@ export function createTranscriptsView({ container, transcription, findRecord, on
   }
 
   function showViewer(t) {
-    const withTimes = toPlainText(t.segments, { timestamps: true });
     const copyButton = el("button", { class: "btn small", text: "Copy text" });
     copyButton.addEventListener("click", () => {
       void navigator.clipboard.writeText(toPlainText(t.segments)).then(() => {
@@ -69,6 +70,11 @@ export function createTranscriptsView({ container, transcription, findRecord, on
     const body = t.segments.length
       ? t.segments.map((s) => el("div", { class: "seg" }, [el("time", { text: formatClock(s.start) }), el("span", { text: s.text })]))
       : [el("p", { class: "muted", text: "No speech was found in this recording." })];
+    const where = t.files?.length
+      ? el("p", { class: "faint", text: `Saved next to the recording: ${t.files.join(" and ")}.` })
+      : t.filesError
+        ? el("p", { class: "notice warn", text: t.filesError })
+        : null;
     container.replaceChildren(
       el("div", { class: "row spread" }, [
         el("div", { class: "title clip", text: t.title }),
@@ -79,7 +85,10 @@ export function createTranscriptsView({ container, transcription, findRecord, on
         el("button", {
           class: "btn small",
           text: "Save as text",
-          on: { click: () => downloadText(transcriptFileName(`${t.title} transcript`, "txt"), withTimes, "text/plain") },
+          on: {
+            click: () =>
+              downloadText(transcriptFileName(`${t.title} transcript`, "txt"), toPlainText(t.segments, { timestamps: true }), "text/plain"),
+          },
         }),
         el("button", {
           class: "btn small",
@@ -97,130 +106,115 @@ export function createTranscriptsView({ container, transcription, findRecord, on
           },
         }),
       ]),
+      where,
       el("section", { class: "card transcript-text" }, body),
     );
   }
 
-  /** Opens the form for one recording. */
+  /** Starts at once when the recording can be read. Otherwise asks, once, for the folder. */
   async function startFor(record) {
     onClearError();
-    const machine = { deviceMemoryGb: navigator.deviceMemory, cores: navigator.hardwareConcurrency };
-    const cached = new Set();
-    for (const m of TRANSCRIPTION_MODELS) if (await isModelCached(m.repo).catch(() => false)) cached.add(m.id);
+    const root = await transcription.access.ready(record).catch(() => null);
+    if (root) return run(record, root);
+    showAccessPrompt(record);
+  }
 
-    const fileInput = el("input", {
-      attrs: { type: "file", id: "transcribe-file", accept: "video/*,audio/*,.mp4,.webm,.m4a,.mp3,.wav,.ogg" },
+  function showAccessPrompt(record) {
+    const allow = el("button", { class: "btn primary", text: "Allow access" });
+    allow.addEventListener("click", () => {
+      allow.disabled = true;
+      onClearError();
+      // The prompt and the folder picker only open from a click, so this runs straight from the button.
+      transcription.access
+        .grant(record)
+        .then((root) => run(record, root))
+        .catch((e) => {
+          allow.disabled = false;
+          onError(e);
+        });
     });
-    const modelSelect = el(
-      "select",
-      { attrs: { id: "transcribe-model" } },
-      TRANSCRIPTION_MODELS.map((m) =>
-        el("option", { attrs: { value: m.id }, text: `${m.label} (${cached.has(m.id) ? "downloaded" : `${m.downloadMb} MB download`})` }),
-      ),
+    container.replaceChildren(
+      el("section", { class: "card stack" }, [
+        el("div", { class: "title clip", text: `Transcribe: ${record.title}` }),
+        el("p", {
+          class: "muted",
+          text:
+            record.location?.kind === "folder"
+              ? `To read this recording, Chrome needs you to allow access to your recordings folder, "${record.location.folderName}", again.`
+              : 'To read this recording, Chrome needs you to allow access to your "Call Recordings" folder in Downloads. Chrome asks for this once, because an extension cannot read your files by itself.',
+        }),
+        el("p", {
+          class: "faint",
+          text: "It only reads your recordings there, and saves each transcript in the same folder as its recording. Nothing leaves your computer.",
+        }),
+        el("div", { class: "row" }, [allow, el("button", { class: "btn", text: "Back", on: { click: () => void showList() } })]),
+      ]),
     );
-    modelSelect.value = recommendModel(machine);
-    const languageSelect = el(
-      "select",
-      { attrs: { id: "transcribe-language" } },
-      TRANSCRIPTION_LANGUAGES.map((l) => el("option", { attrs: { value: l.code }, text: l.label })),
-    );
-    const syncLanguage = () => {
-      const multilingual = modelById(modelSelect.value).multilingual;
-      languageSelect.disabled = !multilingual;
-      if (!multilingual) languageSelect.value = "en";
-      else if (languageSelect.value === "en" && !running) languageSelect.value = "auto";
-      setText(
-        downloadNote,
-        cached.has(modelSelect.value)
-          ? ""
-          : `The first time, the model is downloaded once (${modelById(modelSelect.value).downloadMb} MB) from huggingface.co. Only the model is downloaded. Your recording and its text never leave this computer.`,
-      );
-    };
-    const downloadNote = el("p", { class: "faint" });
-    modelSelect.addEventListener("change", syncLanguage);
+  }
 
+  async function run(record, root) {
+    const cached = await isModelCached(MODEL.repo).catch(() => false);
     const progress = el("progress", { attrs: { max: "1", value: "0" } });
     const status = el("p", { class: "muted", attrs: { "aria-live": "polite" } });
     const live = el("div", { class: "transcript-text" });
-    const progressBox = el("div", { class: "stack" }, [progress, status, live]);
-    progressBox.hidden = true;
-
-    const startButton = el("button", { class: "btn primary", text: "Start", attrs: { disabled: "" } });
     const stopButton = el("button", { class: "btn", text: "Stop" });
-    const backButton = el("button", { class: "btn", text: "Back", on: { click: () => void showList() } });
-    stopButton.hidden = true;
-    fileInput.addEventListener("change", () => (startButton.disabled = !fileInput.files?.length));
-
-    const where = record.location?.kind === "folder" ? `Folder: ${record.location.folderName}` : record.location?.path;
-    const form = el("section", { class: "card stack" }, [
-      el("div", { class: "title clip", text: `Transcribe: ${record.title}` }),
-      el("p", {
-        class: "muted",
-        text: `Choose the recording file${record.fileName ? ` (${record.fileName})` : ""}.${where ? ` It was saved at ${where}.` : ""} The browser reads it from your computer.`,
-      }),
-      el("div", { class: "fields" }, [
-        el("label", { class: "field" }, [el("span", { text: "Recording file" }), fileInput]),
-        el("label", { class: "field" }, [el("span", { text: "Model" }), modelSelect]),
-        el("label", { class: "field" }, [el("span", { text: "Language" }), languageSelect]),
-      ]),
-      downloadNote,
-      el("p", { class: "faint", text: "Keep this tab open until it finishes. A long call can take a while." }),
-      el("div", { class: "row" }, [startButton, stopButton, backButton]),
-      progressBox,
-    ]);
-    container.replaceChildren(form);
-    syncLanguage();
-
-    startButton.addEventListener("click", () => {
-      const file = fileInput.files?.[0];
-      if (!file || running) return;
-      onClearError();
-      const controller = new AbortController();
-      running = { controller };
-      for (const node of [fileInput, modelSelect, languageSelect, startButton, backButton]) node.disabled = true;
-      stopButton.hidden = false;
-      progressBox.hidden = false;
-      window.onbeforeunload = () => true;
-      stopButton.onclick = () => {
-        controller.abort();
-        setText(status, "Stopping after this part...");
-      };
-      const modelName = modelById(modelSelect.value).label;
-      void transcription.service
-        .run({
-          record,
-          file,
-          modelId: modelSelect.value,
-          language: languageSelect.value,
-          signal: controller.signal,
-          onProgress: (p) => {
-            if (p.phase === "decoding") setText(status, "Reading the recording...");
-            if (p.phase === "model") {
-              progress.value = p.totalBytes ? p.loadedBytes / p.totalBytes : 0;
-              setText(status, `Downloading the model (${formatBytes(p.loadedBytes)} of ${formatBytes(p.totalBytes)})...`);
-            }
-            if (p.phase === "transcribing") {
-              progress.value = p.total ? p.done / p.total : 1;
-              setText(status, `${modelName}: part ${p.done} of ${p.total}. ${eta(p.etaMs)}`.trim());
-              live.replaceChildren(
-                ...p.segments
-                  .slice(-4)
-                  .map((s) => el("div", { class: "seg" }, [el("time", { text: formatClock(s.start) }), el("span", { text: s.text })])),
-              );
-            }
-          },
-        })
-        .then((t) => showViewer(t))
-        .catch((e) => {
-          if (e?.code !== "cancelled") onError(e);
-          void showList();
-        })
-        .finally(async () => {
-          running = null;
-          window.onbeforeunload = null;
-          await transcription.engine.dispose().catch((e) => console.warn(messageOf(e)));
+    const note = cached
+      ? null
+      : el("p", {
+          class: "notice",
+          text: `One time only: the speech model (about ${MODEL.downloadMb} MB) is being downloaded. It is needed so your recording can be turned into text here, on your computer, instead of being uploaded to a service. It is kept, so later transcripts use it and nothing is downloaded again.`,
         });
+    container.replaceChildren(
+      el("section", { class: "card stack" }, [
+        el("div", { class: "title clip", text: `Transcribe: ${record.title}` }),
+        note,
+        el("p", { class: "faint", text: "Keep this tab open until it finishes. A long call can take a while." }),
+        progress,
+        status,
+        el("div", { class: "row" }, [stopButton]),
+        live,
+      ]),
+    );
+    const controller = new AbortController();
+    running = { controller };
+    window.onbeforeunload = () => true;
+    stopButton.addEventListener("click", () => {
+      controller.abort();
+      stopButton.disabled = true;
+      setText(status, "Stopping after this part...");
     });
+    try {
+      const file = await transcription.access.readFile(root, record);
+      const t = await transcription.service.run({
+        record,
+        file,
+        signal: controller.signal,
+        onProgress: (p) => {
+          if (p.phase === "decoding") setText(status, "Reading the recording...");
+          if (p.phase === "model") {
+            progress.value = p.totalBytes ? p.loadedBytes / p.totalBytes : 0;
+            setText(status, `Downloading the speech model (${formatBytes(p.loadedBytes)} of ${formatBytes(p.totalBytes)})...`);
+          }
+          if (p.phase === "transcribing") {
+            progress.value = p.total ? p.done / p.total : 1;
+            setText(status, `Part ${p.done} of ${p.total}. ${eta(p.etaMs)}`.trim());
+            live.replaceChildren(
+              ...p.segments
+                .slice(-4)
+                .map((s) => el("div", { class: "seg" }, [el("time", { text: formatClock(s.start) }), el("span", { text: s.text })])),
+            );
+          }
+        },
+      });
+      showViewer(t);
+    } catch (e) {
+      if (e?.code !== "cancelled") onError(e);
+      void showList();
+    } finally {
+      running = null;
+      window.onbeforeunload = null;
+      await transcription.engine.dispose().catch((e) => console.warn(messageOf(e)));
+    }
   }
 
   return { showList, startFor, isRunning: () => running !== null };

@@ -1,8 +1,8 @@
-// The chosen output folder is a handle that cannot go in chrome.storage, so it lives in IndexedDB.
-// Every extension page and the offscreen engine share the extension's origin, so they all see the same one.
+// Folder handles cannot go in chrome.storage, so they live in IndexedDB. There are two: the output folder the person chose for
+// recordings, and the "Call Recordings" folder in Downloads they allowed us to read, so recordings can be transcribed.
+// Every extension page and the offscreen engine share the extension's origin, so they all see the same ones.
 const DB_NAME = "call-recorder";
 const STORE = "handles";
-const KEY = "output-folder";
 function open() {
   return new Promise((resolve, reject) => {
     const req = indexedDB.open(DB_NAME, 1);
@@ -23,15 +23,20 @@ async function run(mode, action) {
     db.close();
   }
 }
-export const directoryHandleStore = {
-  get: () => run("readonly", (s) => s.get(KEY)),
-  set: async (handle) => {
-    await run("readwrite", (s) => s.put(handle, KEY));
-  },
-  clear: async () => {
-    await run("readwrite", (s) => s.delete(KEY));
-  },
-};
+/** @param {string} key */
+export function createDirectoryHandleStore(key) {
+  return {
+    get: () => run("readonly", (s) => s.get(key)),
+    set: async (handle) => {
+      await run("readwrite", (s) => s.put(handle, key));
+    },
+    clear: async () => {
+      await run("readwrite", (s) => s.delete(key));
+    },
+  };
+}
+export const directoryHandleStore = createDirectoryHandleStore("output-folder");
+export const recordingsRootStore = createDirectoryHandleStore("recordings-root");
 
 /**
  * @typedef {object} DirectoryHandleStore

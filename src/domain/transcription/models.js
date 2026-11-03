@@ -1,5 +1,6 @@
-// The Whisper models a user can pick. The first one is small enough for any laptop; bigger ones are more accurate but slower and
-// a bigger download. Sizes are the quantised (8 bit) files in the ONNX repositories on Hugging Face.
+// The Whisper models. One is used for everyone: it hears many languages, finds the language by itself, and is small enough for any
+// laptop. The others are here so the choice can change in one place. Sizes are the quantised (8 bit) files in the ONNX repositories
+// on Hugging Face.
 /**
  * @typedef {object} TranscriptionModel
  * @property {string} id
@@ -16,35 +17,12 @@ export const TRANSCRIPTION_MODELS = [
   { id: "small", repo: "onnx-community/whisper-small", label: "Most accurate, many languages", downloadMb: 249, multilingual: true },
 ];
 
-/** "auto" lets a multilingual model detect the language itself. The rest are Whisper language codes. */
-export const TRANSCRIPTION_LANGUAGES = [
-  { code: "auto", label: "Detect automatically" },
-  { code: "en", label: "English" },
-  { code: "hi", label: "Hindi" },
-  { code: "es", label: "Spanish" },
-  { code: "fr", label: "French" },
-  { code: "de", label: "German" },
-  { code: "pt", label: "Portuguese" },
-  { code: "ar", label: "Arabic" },
-  { code: "zh", label: "Chinese" },
-  { code: "ja", label: "Japanese" },
-];
+/** The model every transcript is made with. */
+export const DEFAULT_MODEL_ID = "base";
 
 /** @returns {TranscriptionModel} */
 export function modelById(id) {
   const found = TRANSCRIPTION_MODELS.find((m) => m.id === id);
   if (!found) throw new Error(`Unknown transcription model: ${id}`);
   return found;
-}
-
-/**
- * The model to suggest for this computer. Bigger models need more memory and a faster processor, and the person can always change it.
- * Chrome reports memory in whole gigabytes up to 8, so 8 means "8 or more".
- * @param {{ deviceMemoryGb?: number; cores?: number }} machine
- * @returns {string} A model id.
- */
-export function recommendModel({ deviceMemoryGb = 4, cores = 4 } = {}) {
-  if (deviceMemoryGb < 4) return "tiny.en";
-  if (deviceMemoryGb >= 8 && cores >= 8) return "small";
-  return "base";
 }

@@ -1,19 +1,21 @@
-/** Copies a finished recording into the folder the user chose, as a stream, so it never sits in memory. */
+/** Copies a finished recording into the folder the user chose, into a folder of its own, as a stream, so it never sits in memory. */
 export class DirectoryFolderWriter {
   handles;
   constructor(handles) {
     this.handles = handles;
   }
-  async write(file, fileName) {
-    const dir = await this.handles.get();
-    if (!dir) throw new Error("No output folder is chosen.");
+  async write(file, fileName, folder = "") {
+    const root = await this.handles.get();
+    if (!root) throw new Error("No output folder is chosen.");
     // Asking needs a click, and the popup does it when Start is pressed. Here we can only check.
-    if ((await dir.queryPermission({ mode: "readwrite" })) !== "granted") {
+    if ((await root.queryPermission({ mode: "readwrite" })) !== "granted") {
       throw new Error("Chrome needs you to allow the output folder again.");
     }
-    const target = await dir.getFileHandle(await this.freeName(dir, fileName), { create: true });
+    const dir = folder ? await root.getDirectoryHandle(folder, { create: true }) : root;
+    const name = await this.freeName(dir, fileName);
+    const target = await dir.getFileHandle(name, { create: true });
     await file.stream().pipeTo(await target.createWritable());
-    return { folderName: dir.name };
+    return { folderName: root.name, relativePath: folder ? [folder, name] : [name] };
   }
   /** call.mp4, then call-2.mp4, call-3.mp4: never overwrite someone's file. */
   async freeName(dir, fileName) {

@@ -1,15 +1,16 @@
 import { CONFIG } from "../config.js";
-/** Saves into Downloads/Call Recordings. No permission prompt, and it works on every machine. */
+import { relativeToRoot } from "../domain/fileNamer.js";
+/** Saves into Downloads/Call Recordings, a folder for each recording. No permission prompt, and it works on every machine. */
 export class DownloadsOutputWriter {
   async write(file) {
     const downloadId = await chrome.downloads.download({
       url: file.blobUrl,
-      filename: `${CONFIG.downloadsFolder}/${file.fileName}`,
+      filename: [CONFIG.downloadsFolder, file.folder, file.fileName].filter(Boolean).join("/"),
       conflictAction: "uniquify",
       saveAs: false,
     });
     const item = await this.untilFinished(downloadId);
-    return { kind: "downloads", downloadId, path: item.filename };
+    return { kind: "downloads", downloadId, path: item.filename, relativePath: relativeToRoot(item.filename, CONFIG.downloadsFolder) };
   }
   /** Resolves when the file is fully on disk. The object URL must stay alive until then. */
   untilFinished(id) {

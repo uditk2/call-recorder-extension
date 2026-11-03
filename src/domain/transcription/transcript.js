@@ -16,6 +16,8 @@
  * @property {string} language "auto" or a language code.
  * @property {number} durationSec Length of the recording.
  * @property {TranscriptSegment[]} segments
+ * @property {string[]} [files] Names of the text files saved next to the recording.
+ * @property {string} [filesError] Why the files could not be saved, when they could not.
  */
 
 /** Things Whisper writes when there is nothing to hear. They are not speech. */

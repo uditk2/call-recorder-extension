@@ -1,5 +1,5 @@
 import { AppError, messageOf } from "../domain/errors.js";
-import { buildFileName, extensionFromMime } from "../domain/fileNamer.js";
+import { buildFileName, buildFolderName, extensionFromMime } from "../domain/fileNamer.js";
 /**
  * Copies a finished recording out of private storage to its destination and updates the index.
  * Used for a normal stop and for recovering an unfinished recording, so the two paths cannot drift apart.
@@ -20,6 +20,8 @@ export class ExportService {
         siteId: record.siteId,
         extension: extensionFromMime(record.mimeType),
       });
+    // Each recording gets a folder of its own, so its transcript can sit beside it. An earlier attempt keeps the folder it chose.
+    const folder = record.folder || buildFolderName({ startedAt: record.startedAt, siteId: record.siteId });
     let file;
     try {
       file = await recorder.exportFile(record.stagingName, fileName, record.mimeType);
@@ -28,9 +30,9 @@ export class ExportService {
       throw new AppError("not-found", "The recording file could not be found.");
     }
     try {
-      const location = await output.write(file);
+      const location = await output.write({ ...file, folder });
       const { error: _cleared, ...rest } = record;
-      const saved = { ...rest, fileName, sizeBytes: file.sizeBytes, status: "saved", location };
+      const saved = { ...rest, fileName, folder, sizeBytes: file.sizeBytes, status: "saved", location };
       await repo.save(saved);
       await recorder.release(file, true).catch((e) => this.warn("Could not delete the staging file", e));
       return saved;

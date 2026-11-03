@@ -6,13 +6,27 @@ export function slug(text) {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 }
-/** call-2026-11-02-1105-google-meet.mp4 (local time, so it matches the clock the user sees). */
-export function buildFileName(input) {
+/** call-2026-11-02-1105-google-meet (local time, so it matches the clock the user sees). The folder of a recording and the start of its file name. */
+export function buildFolderName(input) {
   const d = new Date(input.startedAt);
   const day = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
   const time = `${pad(d.getHours())}${pad(d.getMinutes())}`;
   const site = slug(input.siteId) || "call";
-  return `call-${day}-${time}-${site}.${input.extension}`;
+  return `call-${day}-${time}-${site}`;
+}
+/** call-2026-11-02-1105-google-meet.mp4 */
+export function buildFileName(input) {
+  return `${buildFolderName(input)}.${input.extension}`;
+}
+/**
+ * Where a saved file sits inside the recordings folder, as folder names and the file name. A download is saved under the
+ * recordings folder, so the path is cut after that folder's name: ".../Downloads/Call Recordings/call-x/call-x.mp4" becomes
+ * ["call-x", "call-x.mp4"]. Older recordings sit straight in the folder and give just the file name.
+ */
+export function relativeToRoot(absolutePath, rootName) {
+  const parts = absolutePath.split(/[\\/]+/).filter(Boolean);
+  const at = parts.lastIndexOf(rootName);
+  return at >= 0 && at < parts.length - 1 ? parts.slice(at + 1) : parts.slice(-1);
 }
 export function extensionFromMime(mimeType) {
   return mimeType.includes("mp4") ? "mp4" : "webm";

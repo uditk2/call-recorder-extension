@@ -7,12 +7,14 @@ const empty = byId("empty");
 const errorBox = byId("error");
 let records = [];
 const titleOf = (r) => r.tabTitle || r.siteName;
+/** What the Transcripts tab needs to find a recording and save its transcript next to it. */
+const forTranscript = (r) => ({ id: r.id, title: titleOf(r), fileName: r.fileName, folder: r.folder, location: r.location });
 const view = createTranscriptsView({
   container: byId("pane-transcripts"),
   transcription: createLibraryTranscription(),
   findRecord: async (id) => {
     const r = (await background("recording/list", {})).find((x) => x.id === id);
-    return r && { id: r.id, title: titleOf(r), fileName: r.fileName, location: r.location };
+    return r && forTranscript(r);
   },
   onError: (e) => showError(errorBox, e),
   onClearError: () => show(errorBox, false),
@@ -66,11 +68,10 @@ function card(r) {
     );
   }
   if (r.status === "saved") {
-    // Transcribing needs the recording file itself, which the person picks, because a page cannot read the Downloads folder on its own.
     actions.push(
       button("Transcribe", async () => {
         selectTab("transcripts");
-        await view.startFor({ id: r.id, title: titleOf(r), fileName: r.fileName, location: r.location });
+        await view.startFor(forTranscript(r));
       }),
     );
   }
