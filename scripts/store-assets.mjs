@@ -17,7 +17,7 @@ const DIST = path.resolve("dist");
 const OUT = { shots: "store/screenshots", promo: "store/promo", tmp: "store/.tmp" };
 for (const d of Object.values(OUT)) mkdirSync(d, { recursive: true });
 const fontUrl = (f) => pathToFileURL(path.join(DIST, "fonts", f)).href;
-const logoSvg = readFileSync("static/icons/logo.svg", "utf8");
+const logoPng = `data:image/png;base64,${readFileSync("static/icons/icon-128.png").toString("base64")}`;
 
 // ---------- sample data ----------
 const at = (day, h, m) => Date.UTC(2026, 10, day, h, m);
@@ -126,6 +126,7 @@ main{max-width:720px;margin:0 auto;padding:3rem 1.5rem 5rem}h1,h2{letter-spacing
 code{background:#ecede8;padding:.1em .35em;border-radius:6px}li{margin:.25rem 0}</style>
 <main>${markdownToHtml(readFileSync("store/privacy-policy.md", "utf8"))}</main></html>`;
 writeFileSync("store/privacy-policy.html", policy);
+writeFileSync("docs/privacy.html", policy); // served by GitHub Pages, and the address the store listing links to
 
 // ---------- go ----------
 const browser = await chromium.launch();
@@ -170,7 +171,7 @@ try {
 
   const promo = frame(`
 <div style="width:440px;height:280px;position:relative;background:#14523d">
-  <div style="position:absolute;left:34px;top:44px;width:64px;height:64px">${logoSvg.replace("<svg ", '<svg width="64" height="64" ')}</div>
+  <div style="position:absolute;left:34px;top:44px;width:64px;height:64px"><img src="${logoPng}" width="64" height="64" alt=""></div>
   <div style="position:absolute;left:34px;top:136px;width:380px"><div class="bar" style="height:5px;width:48px;margin-bottom:14px"></div>
     <h1 style="font-size:40px">Call Recorder</h1><p class="sub" style="font-size:17px;margin-top:8px">Record calls on your own device.</p></div>
 </div>`);

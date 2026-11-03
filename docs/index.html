@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Call Recorder: record Google Meet and web calls in Chrome, on your own computer</title>
+  <meta name="description" content="A free, open source Chrome extension that records Google Meet and other web call tabs, your microphone and shared screen sound to a file on your own computer. No server, no account, nothing uploaded.">
+  <link rel="canonical" href="https://uditk2.github.io/call-recorder-extension/">
+  <link rel="icon" href="logo.png">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Call Recorder: record Google Meet and web calls in Chrome">
+  <meta property="og:description" content="Records the call, your microphone and shared screen sound to a file on your own computer. No server, no account, nothing uploaded.">
+  <meta property="og:url" content="https://uditk2.github.io/call-recorder-extension/">
+  <meta property="og:image" content="https://uditk2.github.io/call-recorder-extension/social-preview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Call Recorder",
+    "applicationCategory": "BrowserApplication",
+    "operatingSystem": "Chrome",
+    "description": "Chrome extension that records Google Meet and other web call tabs, your microphone and shared screen sound on your own computer.",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "license": "https://www.gnu.org/licenses/agpl-3.0.html",
+    "codeRepository": "https://github.com/uditk2/call-recorder-extension"
+  }
+  </script>
+  <style>
+    :root { --ink:#10261f; --muted:#51655d; --bg:#f3f3ee; --accent:#255152; --rec:#e64d1f; }
+    * { box-sizing: border-box; }
+    body { margin:0; font:17px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; color:var(--ink); background:var(--bg); }
+    main { max-width: 760px; margin: 0 auto; padding: 56px 22px 80px; }
+    img.logo { width: 88px; height: 88px; }
+    h1 { font-size: clamp(1.9rem, 5vw, 2.6rem); line-height: 1.15; letter-spacing: -0.02em; margin: 18px 0 14px; }
+    h2 { font-size: 1.35rem; margin: 40px 0 10px; }
+    p.lead { font-size: 1.15rem; color: var(--muted); margin: 0 0 22px; }
+    a.btn { display:inline-block; background:var(--accent); color:#fff; text-decoration:none; padding:11px 20px; border-radius:10px; font-weight:600; margin: 0 10px 10px 0; }
+    a.btn.alt { background:transparent; color:var(--accent); border:2px solid var(--accent); padding:9px 18px; }
+    li { margin: 6px 0; }
+    code { background:#e6e6df; padding:2px 6px; border-radius:6px; font-size:.92em; }
+    pre { background:#e6e6df; padding:14px 16px; border-radius:10px; overflow:auto; }
+    footer { margin-top: 48px; color: var(--muted); font-size: .92rem; }
+  </style>
+</head>
+<body>
+<main>
+  <img class="logo" src="logo.png" alt="Call Recorder logo: a speech bubble with a red record dot">
+  <h1>Record Google Meet and web calls in Chrome, on your own computer</h1>
+  <p class="lead">Call Recorder is a free, open source Chrome extension. It saves the call, your microphone and the sound of any screen or tab you share to one file on your own computer. No server, no account, nothing uploaded.</p>
+  <p>
+    <a class="btn" href="https://github.com/uditk2/call-recorder-extension#install">Install</a>
+    <a class="btn alt" href="https://github.com/uditk2/call-recorder-extension">View on GitHub</a>
+  </p>
+
+  <h2>What you get</h2>
+  <ul>
+    <li><strong>The whole call in one file.</strong> Other people's voices and video, your microphone and shared screen sound, as MP4 or WebM.</li>
+    <li><strong>A clear voice.</strong> Noise reduction runs on your computer, with a safety net that never lets it swallow your voice.</li>
+    <li><strong>Private by design.</strong> No cloud, no sign-up, no analytics. Recording starts only when you press Start.</li>
+    <li><strong>Light on your computer.</strong> The file is written to disk as it records, so long meetings do not fill your memory.</li>
+    <li><strong>Works on Google Meet, Konvene</strong> and other calls in a Chrome tab.</li>
+  </ul>
+
+  <h2>Questions</h2>
+  <p><strong>Can I record a Google Meet call?</strong> Yes. Open the call tab, click the extension, confirm you told everyone, and press Start. The sound of a screen or tab you share in Meet is recorded too.</p>
+  <p><strong>Is it free?</strong> Yes. It is open source under AGPL-3.0.</p>
+  <p><strong>Is it legal?</strong> Many places need everyone's consent to record a call. The extension asks you to confirm, and shows a recording badge on Konvene. The responsibility is yours.</p>
+
+  <footer>
+    <a href="privacy.html">Privacy policy</a> · <a href="https://github.com/uditk2/call-recorder-extension/issues">Support</a> · Not affiliated with Google.
+  </footer>
+</main>
+</body>
+</html>

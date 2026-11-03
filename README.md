@@ -1,8 +1,45 @@
-# Call Recorder
+<p align="center"><img src="static/icons/icon-128.png" width="96" height="96" alt="Call Recorder logo: a speech bubble with a red record dot"></p>
 
-A Chrome extension that records a call tab and your microphone on your own device. No server, no account, nothing uploaded.
-Built for Konvene first, and it also works on Google Meet and any other call in a tab. It wears Konvene's brand
-(bottle green, brass, Instrument Sans and Bricolage Grotesque).
+# Call Recorder: record Google Meet and web calls in Chrome, on your own computer
+
+A free, open source **Chrome extension that records video calls** (Google Meet, [Konvene](https://github.com/rakeshmenon/konvene) and any call in a browser tab) to a single file on your own computer. It records the call, your microphone and the sound of a screen or tab you share, with noise reduction and small files.
+
+**No server, no account, no upload, no telemetry.** Everything runs in your browser.
+
+[Why](#why-use-it) · [Install](#install) · [FAQ](#faq) · [Design and plan](#design-and-plan) · [Licence](#licence)
+
+## Why use it
+
+- **Records the whole call.** The other people's voices and video, your microphone, and the sound of anything shared in the call, mixed into one MP4 or WebM file.
+- **Clear voice.** RNNoise noise suppression runs on your computer, with a safety net that never lets it swallow your voice.
+- **Private by design.** Nothing leaves your machine. No cloud, no sign-up, no analytics. Recording needs your click, and the extension makes recording visible to the others on the call.
+- **Light.** The file is written to disk as it records, so memory stays flat on long meetings. Video is capped at 720p and 15 fps, and the encoder is chosen to go easy on your processor.
+- **Free and open.** AGPL-3.0, built for Konvene and working on Google Meet and other web call sites.
+
+## Install
+
+Chrome Web Store: not published yet (see [store/SUBMIT.md](store/SUBMIT.md)). Until then, load it yourself:
+
+```sh
+git clone https://github.com/uditk2/call-recorder-extension
+cd call-recorder-extension
+npm install
+npm run build
+```
+
+Then open `chrome://extensions`, switch on **Developer mode**, choose **Load unpacked** and pick the `dist/` folder. On first run, allow the microphone on the setup page.
+
+## FAQ
+
+**Can I record a Google Meet call in Chrome?** Yes. Open the call tab, click the extension, tick that you told everyone, and press Start. On Meet, the sound of a screen or tab you share is recorded too, while it is shared.
+
+**Does it upload my recordings?** No. There is no server. Files go to `Downloads/Call Recordings`, or to a folder you choose.
+
+**Does it work for Zoom, Teams or Slack calls?** Only the web versions in a Chrome tab. Desktop apps are not recorded.
+
+**Is it legal to record a call?** In many places you need everyone's consent. The extension shows a recording badge on Konvene and asks you to confirm on other sites, but the responsibility is yours.
+
+**Does it record my voice clearly?** Yes. Your microphone is cleaned with RNNoise, a small noise model that runs on your computer, and the audio is encoded at a bitrate that keeps speech clear.
 
 ## Design and plan
 

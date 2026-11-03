@@ -2,13 +2,13 @@
 
 Copy each block into the matching field of the dashboard.
 
-## Name
+## Name (75 characters at most)
 
-Call Recorder
+Call Recorder: Record Google Meet and Web Calls Locally
 
 ## Summary (132 characters at most)
 
-Record a call tab and your microphone on your own device. No account, no server, nothing uploaded.
+Record Google Meet and web call tabs with your mic and shared screen sound, on your own device. No account, nothing uploaded.
 
 ## Category
 
@@ -20,9 +20,9 @@ English
 
 ## Description
 
-Call Recorder saves a video call to a single file on your own computer. It records the call tab (everyone you hear and see) and your microphone together, cleans up your voice, and keeps the file small.
+Call Recorder is a free call recorder for Google Meet and other video calls in a Chrome tab. It saves the call to a single MP4 or WebM file on your own computer: the call tab (everyone you hear and see), your microphone and the sound of any screen or tab shared in the call. It cleans up your voice with noise reduction and keeps the file small.
 
-Nothing leaves your device. There is no account, no server, no analytics and no upload. Recordings go to your Downloads folder, or to a folder you choose.
+Nothing leaves your device. There is no account, no server, no analytics and no upload. It is open source (AGPL-3.0). Recordings go to your Downloads folder, or to a folder you choose.
 
 What you get
 • One file with the video of the tab, the other people's voices and yours.
@@ -44,11 +44,17 @@ Call Recorder is not affiliated with, or endorsed by, Google or any call service
 
 Privacy: the call tab and microphone are recorded only after you press Start, and only to a file on your computer. Read the full policy at the privacy policy link on this page.
 
-## Support and privacy links (fill in before submitting)
+## Links
 
-- Support URL: [your support page or repository issues URL]
-- Privacy policy URL: [where you publish store/privacy-policy.html]
-- Homepage URL: [optional]
+- Support URL: https://github.com/uditk2/call-recorder-extension/issues
+- Homepage URL: https://uditk2.github.io/call-recorder-extension/
+- Privacy policy URL: https://uditk2.github.io/call-recorder-extension/privacy.html
+
+The two github.io addresses work once the repository is public and GitHub Pages is on (Settings, Pages, Deploy from branch, `main`, `/docs`).
+
+## Search words (for the listing and the repository)
+
+Google Meet recorder, call recorder, meeting recorder, record video calls, record WebRTC calls, screen share audio, noise reduction, record microphone and tab, offline, no upload, Chrome extension.
 
 ## Graphics
 

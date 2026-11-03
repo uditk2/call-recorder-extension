@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Call Recorder",
   "version": "__VERSION__",
-  "description": "Record a call tab and your microphone on your own device. No server, nothing uploaded.",
+  "description": "Record Google Meet and other web call tabs, your mic and shared screen sound, on your own device. Nothing is uploaded.",
   "minimum_chrome_version": "116",
   "permissions": [
     "tabCapture",
