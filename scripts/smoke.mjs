@@ -179,6 +179,13 @@ try {
     check("the recording reports that sound was detected", v.capture.soundDetected === true);
   }
 
+  // ---- every call site in callSites.json gets the share scripts, and nothing else does ----
+  const manifest = await setup.evaluate(() => chrome.runtime.getManifest());
+  const listed = JSON.parse(readFileSync("src/domain/sites/callSites.json", "utf8")).flatMap((site) => site.origins.map((o) => `${o}/*`));
+  const shareScripts = manifest.content_scripts.filter((c) => c.js.some((f) => /^share/.test(f)));
+  check("the share scripts run on every listed call site", shareScripts.length === 2 && shareScripts.every((c) => listed.every((m) => c.matches.includes(m))), JSON.stringify(shareScripts[0]?.matches));
+  check("the share scripts run only on listed sites, Konvene and the development address", shareScripts.every((c) => c.matches.every((m) => listed.includes(m) || /konvene-calls\.netlify\.app|localhost:8790/.test(m))));
+
   // ---- the extension's own scripts on a supported call page ----
   const callPage = await context.newPage();
   callPage.on("pageerror", (e) => errors.push(`call page: ${e.message}`));

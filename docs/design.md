@@ -11,7 +11,7 @@ A Chrome extension that records a call tab, your microphone and anything you sha
 - **Safe on long calls.** The encoder's output is written to the browser's private file system as it arrives, so memory stays flat and a crash leaves a playable file. On Stop it is copied to Downloads/Call Recordings, or to a folder you chose in setup.
 - **Recording is visible.** On Konvene the page shows everyone a named badge, and the extension refuses to start until the page confirms it is showing. On other sites you confirm that you told everyone.
 - **Shared screens and tabs are recorded too.** When someone shares a screen or tab in the call, its sound is added while it is shared and drops out when sharing stops. No picker, nothing to remember.
-- **Few permissions.** `tabCapture`, `offscreen`, `activeTab`, `downloads`, `storage`, and page scripts on `meet.google.com` and Konvene only.
+- **Few permissions.** `tabCapture`, `offscreen`, `activeTab`, `downloads`, `storage`, and page scripts on a short list of web call sites (Google Meet, Zoom and Teams on the web, Konvene).
 
 ## Pieces
 
@@ -133,7 +133,7 @@ flowchart LR
 | `activeTab` | Read the tab's title and address when you click the icon, to name the file |
 | `downloads` | Save the file, show it in its folder, delete it from the library |
 | `storage` | The library list and settings, kept in the browser on your computer |
-| Page scripts on `meet.google.com` and Konvene | Notice a shared screen or tab and hand its sound to the recorder. They run only while a recording is running in that tab, read no text or messages, and send nothing over the network |
+| Page scripts on Google Meet, Zoom web, Teams web and Konvene | Notice a shared screen or tab and hand its sound to the recorder. They run only while a recording is running in that tab, read no text or messages, and send nothing over the network |
 
 The extension makes no network requests. `npm run validate` fails the build if a permission is added without a written reason in `store/permissions.md`.
 

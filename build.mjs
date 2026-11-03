@@ -43,7 +43,7 @@ const manifest = JSON.parse(readFileSync(`${OUT}/manifest.json`, "utf8"));
 manifest.version = pkg.version;
 const origins = JSON.parse(readFileSync("src/domain/sites/konveneOrigins.json", "utf8"));
 const devOrigins = DEV ? JSON.parse(readFileSync("src/domain/sites/konveneDevOrigins.json", "utf8")) : [];
-const shareOrigins = JSON.parse(readFileSync("src/domain/sites/shareOrigins.json", "utf8"));
+const shareOrigins = JSON.parse(readFileSync("src/domain/sites/callSites.json", "utf8")).flatMap((site) => site.origins);
 const matchesOf = (list) => list.map((o) => `${o}/*`);
 // The Konvene badge bridge runs on Konvene only. Share watching also runs on the other call sites we know.
 manifest.content_scripts[0].matches = matchesOf([...origins, ...devOrigins]);

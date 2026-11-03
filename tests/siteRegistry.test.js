@@ -1,3 +1,4 @@
+import callSites from "../src/domain/sites/callSites.json";
 import { describe, expect, it, vi } from "vitest";
 import { createSiteRegistry } from "../src/domain/sites/defaultSites.js";
 import { KONVENE_TAB_MESSAGE } from "../src/domain/sites/konveneProtocol.js";
@@ -48,5 +49,31 @@ describe("site announcements", () => {
     const { adapter } = registry.resolve("https://meet.google.com/x");
     await adapter.announce(7, true, { send });
     expect(send).not.toHaveBeenCalled();
+  });
+
+  it("knows Zoom on the web and Teams on the web, and asks the recorder to confirm on them", () => {
+    for (const [url, siteId, siteName] of [
+      ["https://app.zoom.us/wc/123456789/join", "zoom", "Zoom"],
+      ["https://teams.microsoft.com/v2/", "microsoft-teams", "Microsoft Teams"],
+      ["https://teams.live.com/meet/9876", "microsoft-teams", "Microsoft Teams"],
+      ["https://teams.cloud.microsoft/", "microsoft-teams", "Microsoft Teams"],
+    ]) {
+      expect(registry.describe(url, "A call")).toMatchObject({ siteId, siteName, consent: "recorder-confirms" });
+    }
+  });
+
+  it("recognises every site in callSites.json, each by an exact https origin", () => {
+    for (const site of callSites) {
+      expect(site.origins.length).toBeGreaterThan(0);
+      for (const origin of site.origins) {
+        expect(origin).toMatch(/^https:\/\/[a-z0-9.-]+$/);
+        expect(registry.describe(`${origin}/some/call`, "x").siteId).toBe(site.id);
+      }
+    }
+  });
+
+  it("does not treat a look-alike address as a known site", () => {
+    expect(registry.describe("https://app.zoom.us.example.com/", "x").siteId).toBe("web");
+    expect(registry.describe("https://evilteams.microsoft.com.example.org/", "x").siteId).toBe("web");
   });
 });

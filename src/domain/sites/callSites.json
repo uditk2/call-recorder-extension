@@ -1,0 +1,25 @@
+[
+  {
+    "id": "google-meet",
+    "name": "Google Meet",
+    "origins": [
+      "https://meet.google.com"
+    ]
+  },
+  {
+    "id": "zoom",
+    "name": "Zoom",
+    "origins": [
+      "https://app.zoom.us"
+    ]
+  },
+  {
+    "id": "microsoft-teams",
+    "name": "Microsoft Teams",
+    "origins": [
+      "https://teams.microsoft.com",
+      "https://teams.live.com",
+      "https://teams.cloud.microsoft"
+    ]
+  }
+]

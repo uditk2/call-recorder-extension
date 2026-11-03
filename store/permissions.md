@@ -37,15 +37,16 @@ The manifest allows `'wasm-unsafe-eval'` for extension pages. It is needed to ru
 to WebAssembly) inside the audio worklet. It only lets the extension's own bundled WebAssembly files run. It does not allow
 `eval` or any remote code. Without it the noise reduction cannot start.
 
-## Content scripts on Google Meet and Konvene
+## Content scripts on Google Meet, Zoom, Microsoft Teams and Konvene
 
-Two small content scripts run only on `https://meet.google.com/*` and Konvene pages (`https://konvene-calls.netlify.app/*`).
-They exist for one reason: when the user shares a screen or a tab in the call, the sound of that share is added to the recording.
-Only the call page itself can see what it shares, so the script runs in the page and notices when the page asks Chrome for a screen
-share. It then offers a copy of the shared sound to the recorder over a WebRTC connection that stays inside the browser on the
-same computer. It does nothing unless a recording is running in that tab. It does not read the page's text, forms, accounts, or
-anyone's messages, and it sends nothing over the network. A third script on Konvene also passes "recording started" and
-"recording stopped" to the page, so Konvene can show everyone in the call a recording badge.
+Two small content scripts run only on these web call sites, and nowhere else:
+
+- `https://meet.google.com/*` (Google Meet)
+- `https://app.zoom.us/*` (Zoom in the browser)
+- `https://teams.microsoft.com/*`, `https://teams.live.com/*` and `https://teams.cloud.microsoft/*` (Microsoft Teams on the web)
+- `https://konvene-calls.netlify.app/*` (Konvene)
+
+They exist for one reason: when the user shares a screen or a tab in the call, the sound of that share is added to the recording. Only the call page itself can see what it shares, so the script runs in the page and notices when the page asks Chrome for a screen share. It then offers a copy of the shared sound to the recorder over a WebRTC connection that stays inside the browser on the same computer. It does nothing unless a recording is running in that tab. It does not read the page's text, forms, accounts, or anyone's messages, and it sends nothing over the network. A third script on Konvene also passes "recording started" and "recording stopped" to the page, so Konvene can show everyone in the call a recording badge.
 
 ## Remote code
 

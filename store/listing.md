@@ -34,7 +34,7 @@ What you get
 • If the browser closes in the middle of a call, the recording is kept and you can save it from the library.
 
 Works with web calls in Chrome
-• Screen and tab sharing: when someone shares in the call on Google Meet or Konvene, the sound of the share is recorded too, while it is shared.
+• Screen and tab sharing: when someone shares in the call on Google Meet, Zoom or Microsoft Teams in the browser, or on Konvene, the sound of the share is recorded too, while it is shared.
 • Konvene: everyone in the call sees a badge with your name while you record.
 • Google Meet and any other call in a browser tab: the extension asks you to confirm you have told everyone before it starts.
 

@@ -17,7 +17,7 @@ Everything that can be prepared is prepared. The steps below need you, because t
 2. **Trader status.** The dashboard asks you to declare whether you are a trader or a non-trader (an EU rule). A free open source extension published by an individual is usually a non-trader, but it is your own legal call. A trader's name, address and phone number are shown publicly on the listing.
 3. Run `npm run package`. In the dashboard choose **Add new item** and upload `store/package/call-recorder-<version>.zip`.
 4. **Store listing:** copy the text from `store/listing.md` (name, summary, description, category, language). Upload `store/screenshots/*.png` (1280 x 800, up to 5) and `store/promo/small-tile-440x280.png`. The icon (128 x 128) comes from the package. A marquee image (1400 x 560) is optional.
-5. **Privacy practices:** paste the single purpose and each permission justification from `store/permissions.md`, including the page scripts on `meet.google.com` and Konvene. Answer the data usage questions the same way, tick the certifications, and add the privacy policy URL.
+5. **Privacy practices:** paste the single purpose and each permission justification from `store/permissions.md`, including the page scripts on the call sites listed there (Meet, Zoom web, Teams web, Konvene). Answer the data usage questions the same way, tick the certifications, and add the privacy policy URL.
 6. **Test instructions:** paste the "Notes for the reviewer" section of `store/permissions.md`.
 7. **Distribution:** choose public, unlisted or private, and the regions.
 8. **Submit for review**, and choose whether to publish automatically once it is approved.
