@@ -10,7 +10,9 @@ A free, open source Chrome extension that records web calls (Google Meet and any
 
 ## Install
 
-Not on the Chrome Web Store yet. Build it and load it:
+**From the Chrome Web Store:** coming soon.
+
+**From source:**
 
 ```sh
 git clone https://github.com/uditk2/call-recorder-extension
@@ -21,10 +23,26 @@ npm run build
 
 Open `chrome://extensions`, switch on **Developer mode**, choose **Load unpacked** and pick the `dist/` folder.
 
-## More
+## Commands
 
-[Design](docs/design.md) · [Implementation plan](docs/implementation-plan.md) · [Development notes](docs/development.md) · [Publishing](store/SUBMIT.md)
+```sh
+npm install
+npm run check         # unit tests, store build, store validation
+npm run build         # the extension, in dist/
+npm run build:dev     # dist-dev/, also trusts http://localhost:8790. Load this one while developing
+npm run smoke         # loads dist-dev/ into a real Chromium and runs the whole engine with synthetic inputs
+npm run package       # store zip in store/package/ (builds, validates, zips)
+npm run store:assets  # screenshots, promo tile and privacy-policy.html in store/
+```
 
-## Licence
+## FAQ
 
-AGPL-3.0. See `LICENSE`.
+**Can I record a Google Meet call in Chrome?** Yes. Open the call tab, click the extension, confirm you told everyone, and press Start. On Meet, the sound of a screen or tab you share is recorded too, while it is shared.
+
+**Does it upload my recordings?** No. There is no server. Files go to `Downloads/Call Recordings`, or to a folder you choose.
+
+**Does it work for Zoom, Teams or Slack calls?** Only the web versions in a Chrome tab. Desktop apps are not recorded.
+
+**Is it legal to record a call?** In many places you need everyone's consent. The extension asks you to confirm that you told everyone, but the responsibility is yours.
+
+**Does it record my voice clearly?** Yes. Your microphone is cleaned with RNNoise, a small noise model that runs on your computer, and the audio is encoded at a bitrate that keeps speech clear.
