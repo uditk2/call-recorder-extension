@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Call Recorder for Google Meet: record Meet and web calls in Chrome, on your own computer</title>
-  <meta name="description" content="Call Recorder for Google Meet is a free, open source Chrome extension that records Google Meet and other web call tabs, your microphone and shared screen sound to a file on your own computer. No server, no account, nothing uploaded.">
+  <title>Call Recorder for Google Meet: free call recording in Chrome, nothing uploaded</title>
+  <meta name="description" content="Call Recorder for Google Meet is a free, open source Chrome extension. Record Meet calls, your mic and shared screen sound to a file on your own computer. Zero cost, no account, no bot, nothing uploaded.">
   <link rel="canonical" href="https://uditk2.github.io/call-recorder-extension/">
   <link rel="icon" href="logo.png">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Call Recorder for Google Meet: record Meet and web calls in Chrome">
-  <meta property="og:description" content="Records the call, your microphone and shared screen sound to a file on your own computer. No server, no account, nothing uploaded.">
+  <meta property="og:title" content="Call Recorder for Google Meet: free call recording in Chrome">
+  <meta property="og:description" content="Zero cost call recording. Records the call, your mic and shared screen sound on your own computer. No account, no bot, nothing uploaded.">
   <meta property="og:url" content="https://uditk2.github.io/call-recorder-extension/">
   <meta property="og:image" content="https://uditk2.github.io/call-recorder-extension/social-preview.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -20,66 +20,98 @@
     "name": "Call Recorder for Google Meet",
     "applicationCategory": "BrowserApplication",
     "operatingSystem": "Chrome",
-    "description": "Chrome extension that records Google Meet and other web call tabs, your microphone and shared screen sound on your own computer.",
+    "description": "Free Chrome extension that records Google Meet calls, your microphone and shared screen sound on your own computer.",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "downloadUrl": "https://chromewebstore.google.com/detail/bgjkpcdmfinihofnnonidldjlgdcnhei",
     "license": "https://www.gnu.org/licenses/agpl-3.0.html",
     "codeRepository": "https://github.com/uditk2/call-recorder-extension"
   }
   </script>
   <style>
-    :root { --ink:#10261f; --muted:#51655d; --bg:#f3f3ee; --accent:#255152; --rec:#e64d1f; }
+    @font-face { font-family: "Instrument Sans"; src: url("fonts/instrument-sans-latin-wdth-normal.woff2") format("woff2"); font-weight: 400 700; font-stretch: 75% 100%; font-display: swap; }
+    @font-face { font-family: "Bricolage Grotesque"; src: url("fonts/bricolage-grotesque-latin-opsz-normal.woff2") format("woff2"); font-weight: 200 800; font-display: swap; }
+    :root { --bg:#10261f; --panel:#14523d; --ink:#f3f3ef; --muted:rgba(243,243,239,.74); --gold:#e0a93c; --rec:#e64d1f; }
     * { box-sizing: border-box; }
-    body { margin:0; font:17px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; color:var(--ink); background:var(--bg); }
-    main { max-width: 760px; margin: 0 auto; padding: 56px 22px 80px; }
-    img.logo { width: 88px; height: 88px; }
-    h1 { font-size: clamp(1.9rem, 5vw, 2.6rem); line-height: 1.15; letter-spacing: -0.02em; margin: 18px 0 14px; }
-    h2 { font-size: 1.35rem; margin: 40px 0 10px; }
-    p.lead { font-size: 1.15rem; color: var(--muted); margin: 0 0 22px; }
-    a.btn { display:inline-block; background:var(--accent); color:#fff; text-decoration:none; padding:11px 20px; border-radius:10px; font-weight:600; margin: 0 10px 10px 0; }
-    a.btn.alt { background:transparent; color:var(--accent); border:2px solid var(--accent); padding:9px 18px; }
-    li { margin: 6px 0; }
-    figure { margin: 22px 0; }
-    figure img { width: 100%; height: auto; border-radius: 12px; display: block; }
-    figcaption { color: var(--muted); font-size: .92rem; margin-top: 6px; }
-    code { background:#e6e6df; padding:2px 6px; border-radius:6px; font-size:.92em; }
-    pre { background:#e6e6df; padding:14px 16px; border-radius:10px; overflow:auto; }
-    footer { margin-top: 48px; color: var(--muted); font-size: .92rem; }
+    body { margin:0; font:18px/1.6 "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif; color:var(--ink); background:var(--bg); }
+    main { max-width: 860px; margin: 0 auto; padding: 48px 22px 72px; }
+    .brand { display:flex; align-items:center; gap:12px; font-weight:600; }
+    .brand img { width:44px; height:44px; border-radius:10px; }
+    h1, h2 { font-family: "Bricolage Grotesque", system-ui, sans-serif; letter-spacing:-.03em; line-height:1.08; }
+    h1 { font-size: clamp(2.4rem, 7vw, 3.8rem); margin: 44px 0 18px; font-weight:700; }
+    h2 { font-size: clamp(1.6rem, 4vw, 2.1rem); margin: 0 0 14px; font-weight:700; }
+    .bar { height:6px; width:64px; border-radius:3px; background:var(--gold); margin-bottom:22px; }
+    p.lead { font-size:1.25rem; color:var(--muted); margin:0 0 26px; max-width:640px; }
+    .actions { display:flex; flex-wrap:wrap; gap:12px; margin-bottom:8px; }
+    a.btn { display:inline-block; text-decoration:none; font-weight:600; padding:13px 22px; border-radius:12px; background:var(--gold); color:#10261f; }
+    a.btn.alt { background:transparent; color:var(--ink); border:2px solid rgba(243,243,239,.35); padding:11px 20px; }
+    .note { color:var(--muted); font-size:.92rem; margin:6px 0 0; }
+    section { margin-top:64px; }
+    .video { position:relative; padding-top:56.25%; border-radius:18px; overflow:hidden; background:#000; box-shadow:0 30px 80px -20px rgba(0,0,0,.55); }
+    .video iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
+    .cards { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:16px; margin-top:22px; }
+    .card { background:var(--panel); border-radius:16px; padding:22px; }
+    .card h3 { margin:0 0 6px; font-size:1.15rem; }
+    .card p { margin:0; color:var(--muted); font-size:1rem; }
+    .shots { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:16px; margin-top:22px; }
+    .shots img { width:100%; height:auto; border-radius:14px; display:block; box-shadow:0 20px 60px -20px rgba(0,0,0,.55); }
+    .faq p { margin:0 0 14px; color:var(--muted); }
+    .faq strong { color:var(--ink); }
+    footer { margin-top:64px; color:var(--muted); font-size:.95rem; }
+    footer a, .faq a { color:var(--ink); }
   </style>
 </head>
 <body>
 <main>
-  <img class="logo" src="logo.png" alt="Call Recorder for Google Meet logo: a speech bubble with a red record dot">
-  <h1>Record Google Meet and web calls in Chrome, on your own computer</h1>
-  <p class="lead">Call Recorder for Google Meet is a free, open source Chrome extension. It saves the call, your microphone and the sound of any screen or tab you share to one file on your own computer. No server, no account, nothing uploaded.</p>
-  <p>
-    <a class="btn" href="https://github.com/uditk2/call-recorder-extension#install">Install</a>
-    <a class="btn alt" href="https://youtu.be/NoLCt4iQMRY">Watch the 30 second demo</a>
-    <a class="btn alt" href="https://github.com/uditk2/call-recorder-extension">View on GitHub</a>
-  </p>
+  <div class="brand"><img src="logo.png" alt="Call Recorder for Google Meet logo: a speech bubble with a red record dot">Call Recorder for Google Meet</div>
 
-  <figure><img src="screenshots/record-meet.png" alt="The Call Recorder popup on a Google Meet tab, with the consent box ticked and a Start recording button" width="1280" height="800"><figcaption>Open the Meet tab, confirm you told everyone, press Start.</figcaption></figure>
+  <h1>Record Google Meet calls. Zero cost.</h1>
+  <p class="lead">A free Chrome extension that saves the call, your microphone and the sound you share to one file on your own computer. No account, no bot, no per-minute fees, nothing uploaded.</p>
+  <div class="actions">
+    <a class="btn" href="https://chromewebstore.google.com/detail/bgjkpcdmfinihofnnonidldjlgdcnhei">Add to Chrome</a>
+    <a class="btn alt" href="https://youtu.be/NoLCt4iQMRY">Watch on YouTube</a>
+  </div>
+  <p class="note">Free and open source (AGPL-3.0).</p>
 
-  <h2>What you get</h2>
-  <ul>
-    <li><strong>The whole call in one file.</strong> Other people's voices and video, your microphone and shared screen sound, as MP4 or WebM.</li>
-    <li><strong>A clear voice.</strong> Noise reduction runs on your computer, with a safety net that never lets it swallow your voice.</li>
-    <li><strong>Private by design.</strong> No cloud, no sign-up, no analytics. Recording starts only when you press Start.</li>
-    <li><strong>Light on your computer.</strong> The file is written to disk as it records, so long meetings do not fill your memory.</li>
-    <li><strong>Built for Google Meet.</strong> Other calls in a Chrome tab can be recorded too.</li>
-  </ul>
+  <section>
+    <div class="bar"></div>
+    <h2>See it work in 30 seconds</h2>
+    <div class="video">
+      <iframe src="https://www.youtube-nocookie.com/embed/NoLCt4iQMRY" title="Call Recorder for Google Meet demo" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+    </div>
+    <p class="note">The YouTube clip shown in the demo is not ours. It appears only to demonstrate recording shared sound.</p>
+  </section>
 
-  <h2>Record the sound you share</h2>
-  <p>Share a tab or screen in the call and its sound goes into the recording while you share it.</p>
-  <figure><img src="screenshots/shared-sound.png" alt="The popup while recording, with a Shared sound meter next to Your voice and Call audio" width="1280" height="800"></figure>
-  <figure><img src="screenshots/library.png" alt="The library page listing recordings with their time, length and size" width="1280" height="800"><figcaption>Every recording in one place, with its time, length, size and tab title.</figcaption></figure>
+  <section>
+    <div class="bar"></div>
+    <h2>Call recording that costs nothing</h2>
+    <div class="cards">
+      <div class="card"><h3>Free, for real</h3><p>No subscription, no free trial, no recording limit. Open source, so you can read every line.</p></div>
+      <div class="card"><h3>No bot in the call</h3><p>It records from your own browser tab. Nobody sees an extra participant.</p></div>
+      <div class="card"><h3>Nothing leaves your computer</h3><p>No server, no account, no analytics. The file goes to your Downloads folder or a folder you pick.</p></div>
+      <div class="card"><h3>Your voice and the sound you share</h3><p>Everyone's voices, your microphone and the sound of a tab or screen you share, in one file.</p></div>
+    </div>
+  </section>
 
-  <h2>Questions</h2>
-  <p><strong>Can I record a Google Meet call?</strong> Yes. Open the call tab, click the extension, confirm you told everyone, and press Start. The sound of a screen or tab you share in Meet is recorded too.</p>
-  <p><strong>Is it free?</strong> Yes. It is open source under AGPL-3.0.</p>
-  <p><strong>Is it legal?</strong> Many places need everyone's consent to record a call. The extension asks you to confirm before it starts. The responsibility is yours.</p>
+  <section>
+    <div class="bar"></div>
+    <h2>How it looks</h2>
+    <div class="shots">
+      <img src="screenshots/record-meet.png" alt="The Call Recorder popup on a Google Meet tab, with the consent box ticked and a Start recording button" width="1280" height="800">
+      <img src="screenshots/shared-sound.png" alt="The popup while recording, with a Shared sound meter next to Your voice and Call audio" width="1280" height="800">
+    </div>
+  </section>
+
+  <section class="faq">
+    <div class="bar"></div>
+    <h2>Questions</h2>
+    <p><strong>How do I record a Google Meet call?</strong> Open the call tab, click the extension, confirm you told everyone, and press Start. Press Stop and save when you are done.</p>
+    <p><strong>Is it really free?</strong> Yes. There is no paid plan. It is open source under AGPL-3.0.</p>
+    <p><strong>Does it upload my calls?</strong> No. Recordings are saved on your computer and nowhere else. Read the <a href="privacy.html">privacy policy</a>.</p>
+    <p><strong>Is it legal?</strong> Many places need everyone's consent to record a call. The extension asks you to confirm before it starts. The responsibility is yours.</p>
+  </section>
 
   <footer>
-    <a href="privacy.html">Privacy policy</a> · <a href="https://github.com/uditk2/call-recorder-extension/issues">Support</a> · Not affiliated with Google.
+    <a href="privacy.html">Privacy policy</a> · <a href="https://github.com/uditk2/call-recorder-extension">GitHub</a> · <a href="https://github.com/uditk2/call-recorder-extension/issues">Support</a> · Not affiliated with Google.
   </footer>
 </main>
 </body>

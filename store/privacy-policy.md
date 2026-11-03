@@ -1,13 +1,13 @@
-# Call Recorder privacy policy
+# Call Recorder for Google Meet privacy policy
 
-Last updated: 2 November 2026
+Last updated: 3 November 2026
 
-Call Recorder is a Chrome extension that records a browser tab and your microphone to a file on your own computer.
+Call Recorder for Google Meet is a Chrome extension that records a browser tab and your microphone to a file on your own computer.
 This policy says what it handles and where that data goes. The short version: **it stays on your computer.**
 
 ## Who is responsible
 
-[Publisher name]. Contact: [contact email]
+Udit Khandelwal. Contact: https://github.com/uditk2/call-recorder-extension/issues
 
 ## What the extension handles
 
@@ -31,11 +31,11 @@ Until you delete it. You can remove a recording from the library page, delete it
 - **Active tab:** to read the title and address of the tab you clicked the extension on, and only that tab.
 - **Downloads:** to save the recording to your Downloads folder and to show or delete it from the library.
 - **Storage:** to keep the library and settings on your computer.
-- A small script runs on Konvene pages only, to show everyone in a Konvene call that you are recording. It reads nothing from the page.
+- **Page scripts on Google Meet and Konvene pages only:** when you share a screen or a tab in the call, a small script notices the share and passes its sound to the recorder inside your browser, and only while a recording is running. It does not read the page's text, forms, accounts or messages, and it sends nothing over the network. On Konvene, a script also tells the page when recording starts and stops, so everyone sees a recording badge.
 
 ## Recording other people
 
-In many places you need everyone's consent to record a call. On Konvene the extension shows everyone a badge while you record. On other sites it asks you to confirm that you have told everyone. You are responsible for following the law that applies to you.
+In many places you need everyone's consent to record a call. On Konvene the extension shows everyone a badge while you record. On Google Meet and other sites it asks you to confirm that you have told everyone. You are responsible for following the law that applies to you.
 
 ## Children
 

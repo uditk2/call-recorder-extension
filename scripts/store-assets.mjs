@@ -104,7 +104,7 @@ async function render(browser, html, size, outFile) {
 
 // ---------- privacy policy page ----------
 function markdownToHtml(md) {
-  const inline = (t) => t.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/`(.+?)`/g, "<code>$1</code>");
+  const inline = (t) => t.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/`(.+?)`/g, "<code>$1</code>").replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1">$1</a>');
   const out = [];
   let list = false;
   for (const line of md.split("\n")) {
@@ -119,11 +119,22 @@ function markdownToHtml(md) {
   return out.join("\n");
 }
 const policy = `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Call Recorder privacy policy</title>
-<style>body{font:16px/1.6 "Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;color:#10261f;background:#f3f3ef;margin:0}
-main{max-width:720px;margin:0 auto;padding:3rem 1.5rem 5rem}h1,h2{letter-spacing:-.02em}h1{font-size:2rem}h2{font-size:1.25rem;margin-top:2rem}
-code{background:#ecede8;padding:.1em .35em;border-radius:6px}li{margin:.25rem 0}</style>
-<main>${markdownToHtml(readFileSync("store/privacy-policy.md", "utf8"))}</main></html>`;
+<title>Call Recorder for Google Meet privacy policy</title>
+<link rel="icon" href="logo.png">
+<style>
+@font-face{font-family:"Instrument Sans";src:url("fonts/instrument-sans-latin-wdth-normal.woff2") format("woff2");font-weight:400 700;font-stretch:75% 100%;font-display:swap}
+@font-face{font-family:"Bricolage Grotesque";src:url("fonts/bricolage-grotesque-latin-opsz-normal.woff2") format("woff2");font-weight:200 800;font-display:swap}
+body{font:17px/1.65 "Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;color:#f3f3ef;background:#10261f;margin:0}
+main{max-width:740px;margin:0 auto;padding:3rem 1.5rem 5rem}
+h1,h2{font-family:"Bricolage Grotesque",system-ui,sans-serif;letter-spacing:-.03em;line-height:1.1}
+h1{font-size:2.3rem;margin:1.4rem 0 .6rem}h2{font-size:1.35rem;margin-top:2.2rem}
+.top{display:flex;align-items:center;gap:12px;font-weight:600}.top img{width:40px;height:40px;border-radius:9px}
+.top a{color:#f3f3ef;text-decoration:none;display:flex;align-items:center;gap:12px}
+a{color:#e0a93c}strong{color:#fff}
+code{background:#14523d;padding:.1em .35em;border-radius:6px}li{margin:.35rem 0}
+p,li{color:rgba(243,243,239,.86)}
+</style>
+<main><div class="top"><a href="./"><img src="logo.png" alt="">Call Recorder for Google Meet</a></div>${markdownToHtml(readFileSync("store/privacy-policy.md", "utf8"))}</main></html>`;
 writeFileSync("store/privacy-policy.html", policy);
 writeFileSync("docs/privacy.html", policy); // served by GitHub Pages, and the address the store listing links to
 
