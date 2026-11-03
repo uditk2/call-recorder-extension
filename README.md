@@ -13,6 +13,7 @@ Call Recorder for Google Meet is a free, open source Chrome extension that recor
 - Records the call tab (the other people's voices and video) and your microphone as one MP4 or WebM file.
 - Adds the sound of a screen or tab you share in the call, while it is shared (Google Meet).
 - Cleans your voice with noise reduction that runs on your computer.
+- Makes a transcript of a recording on your computer. The speech model is downloaded once.
 - Saves to `Downloads/Call Recordings`, or to a folder you choose, and lists your recordings in a library page.
 - Asks you to confirm that you told everyone on the call before it starts.
 

@@ -1,8 +1,31 @@
 import { formatBytes, formatDuration } from "../shared/format.js";
+import { createLibraryTranscription } from "../transcription/createLibraryTranscription.js";
 import { background, byId, el, setText, show, showError } from "./dom.js";
+import { createTranscriptsView } from "./transcripts.js";
 const list = byId("list");
 const empty = byId("empty");
 const errorBox = byId("error");
+let records = [];
+const titleOf = (r) => r.tabTitle || r.siteName;
+const view = createTranscriptsView({
+  container: byId("pane-transcripts"),
+  transcription: createLibraryTranscription(),
+  findRecord: async (id) => {
+    const r = (await background("recording/list", {})).find((x) => x.id === id);
+    return r && { id: r.id, title: titleOf(r), fileName: r.fileName, location: r.location };
+  },
+  onError: (e) => showError(errorBox, e),
+  onClearError: () => show(errorBox, false),
+});
+function selectTab(name) {
+  for (const id of ["recordings", "transcripts"]) {
+    byId(`tab-${id}`).setAttribute("aria-selected", String(id === name));
+    show(byId(`pane-${id}`), id === name);
+  }
+  if (name === "transcripts" && !view.isRunning()) void view.showList();
+}
+byId("tab-recordings").addEventListener("click", () => selectTab("recordings"));
+byId("tab-transcripts").addEventListener("click", () => selectTab("transcripts"));
 const STATUS = {
   recording: { label: "Recording", kind: "warn" },
   saving: { label: "Saving", kind: "warn" },
@@ -42,6 +65,15 @@ function card(r) {
       button("Delete file", () => background("recording/remove", { recordId: r.id, deleteFile: true }).then(() => {}), "danger"),
     );
   }
+  if (r.status === "saved") {
+    // Transcribing needs the recording file itself, which the person picks, because a page cannot read the Downloads folder on its own.
+    actions.push(
+      button("Transcribe", async () => {
+        selectTab("transcripts");
+        await view.startFor({ id: r.id, title: titleOf(r), fileName: r.fileName, location: r.location });
+      }),
+    );
+  }
   if (!live && !(r.status === "saved" && r.location?.kind === "downloads")) {
     actions.push(
       button("Remove from list", () => background("recording/remove", { recordId: r.id, deleteFile: false }).then(() => {}), "danger"),
@@ -49,7 +81,7 @@ function card(r) {
   }
   return el("article", { class: "card rec-item" }, [
     el("div", { class: "row spread" }, [
-      el("div", { class: "title clip", text: r.tabTitle || r.siteName }),
+      el("div", { class: "title clip", text: titleOf(r) }),
       el("span", { class: `chip ${status.kind}`.trim(), text: status.label }),
     ]),
     el("div", { class: "meta" }, [
@@ -68,7 +100,7 @@ let poll;
 async function load() {
   clearTimeout(poll);
   try {
-    const records = await background("recording/list", {});
+    records = await background("recording/list", {});
     list.replaceChildren(...records.map(card));
     show(empty, records.length === 0);
     // While something is recording or saving the page keeps itself fresh.

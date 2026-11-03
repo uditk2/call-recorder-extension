@@ -64,7 +64,13 @@ try {
     const page = await context.newPage();
     page.on("pageerror", (e) => errors.push(`${file}: ${e.message}`));
     page.on("console", (m) => { if (m.type() === "error") errors.push(`${file}: ${m.text()}`); });
-    await page.goto(`chrome-extension://${id}/${file}`);
+    try {
+      await page.goto(`chrome-extension://${id}/${file}`);
+    } catch (e) {
+      // On a fresh install the extension opens its own setup page, and Chrome may reuse this tab for it. Same address, so just wait for it.
+      if (!/interrupted by another navigation/.test(String(e))) throw e;
+      await page.waitForLoadState("load");
+    }
     return page;
   };
   const setup = await open("setup.html");

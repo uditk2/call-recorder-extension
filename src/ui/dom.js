@@ -25,7 +25,7 @@ export function el(tag, options = {}, children = []) {
   if (options.class) node.className = options.class;
   if (options.text !== undefined) node.textContent = options.text;
   for (const [k, v] of Object.entries(options.attrs ?? {})) node.setAttribute(k, v);
-  if (options.on?.click) node.addEventListener("click", options.on.click);
+  for (const [type, handler] of Object.entries(options.on ?? {})) node.addEventListener(type, handler);
   for (const child of children) if (child) node.append(child);
   return node;
 }
@@ -35,5 +35,5 @@ export function el(tag, options = {}, children = []) {
  * @property {string} [class]
  * @property {string} [text]
  * @property {Record<string, string>} [attrs]
- * @property {Partial<Record<"click", (e: Event) => void>>} [on]
+ * @property {Partial<Record<"click" | "change" | "input", (e: Event) => void>>} [on]
  */

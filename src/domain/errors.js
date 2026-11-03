@@ -12,5 +12,5 @@ export function messageOf(e) {
 }
 
 /**
- * @typedef {"consent-required" | "busy" | "not-found" | "no-encoder" | "capture-failed" | "cancelled" | "save-failed"} ErrorCode
+ * @typedef {"consent-required" | "busy" | "not-found" | "no-encoder" | "capture-failed" | "cancelled" | "save-failed" | "decode-failed"} ErrorCode
  */

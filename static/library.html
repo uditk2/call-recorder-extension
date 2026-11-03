@@ -14,9 +14,16 @@
       <h1>Your recordings</h1>
       <p class="lead">Saved on this computer. Nothing is uploaded.</p>
     </div>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="tab-recordings" aria-selected="true">Recordings</button>
+      <button class="tab" role="tab" id="tab-transcripts" aria-selected="false">Transcripts</button>
+    </div>
     <p class="notice err" id="error" hidden></p>
-    <section class="stack" id="list" aria-live="polite"></section>
-    <p class="empty card" id="empty" hidden>No recordings yet. Open a call tab, click the extension icon and press Start.</p>
+    <div id="pane-recordings" role="tabpanel">
+      <section class="stack" id="list" aria-live="polite"></section>
+      <p class="empty card" id="empty" hidden>No recordings yet. Open a call tab, click the extension icon and press Start.</p>
+    </div>
+    <div id="pane-transcripts" role="tabpanel" class="stack" hidden></div>
   </main>
   <script src="library.js"></script>
 </body>

@@ -37,6 +37,22 @@ await build({
   logLevel: "info",
 });
 
+// Transcription: the engine is a separate file, read only when someone presses Transcribe. It is an ES module because the
+// libraries inside it use import.meta. The ONNX Runtime files it needs are copied next to it, so nothing is fetched at run time.
+await build({
+  entryPoints: { engine: "src/transcription/transformersEngine.js" },
+  outdir: `${OUT}/transcribe`,
+  bundle: true,
+  format: "esm",
+  target: "chrome116",
+  define: { __DEV_BUILD__: String(DEV) },
+  logLevel: "info",
+});
+mkdirSync(`${OUT}/transcribe/ort`, { recursive: true });
+for (const f of ["ort-wasm-simd-threaded.asyncify.mjs", "ort-wasm-simd-threaded.asyncify.wasm"]) {
+  cpSync(`node_modules/onnxruntime-web/dist/${f}`, `${OUT}/transcribe/ort/${f}`);
+}
+
 cpSync("static", OUT, { recursive: true });
 
 // The manifest takes its version from package.json and its Konvene match patterns from the same
@@ -53,7 +69,8 @@ const matchesOf = (list) => list.map((o) => `${o}/*`);
 // The Konvene badge bridge runs on Konvene only. Share watching also runs on the other call sites we know.
 if (KONVENE) manifest.content_scripts[0].matches = matchesOf([...origins, ...devOrigins]);
 else manifest.content_scripts = manifest.content_scripts.filter((script) => !script.js.includes("konveneBridge.js"));
-for (const script of manifest.content_scripts.filter((s) => !s.js.includes("konveneBridge.js"))) script.matches = matchesOf([...origins, ...shareOrigins, ...devOrigins]);
+for (const script of manifest.content_scripts.filter((s) => !s.js.includes("konveneBridge.js")))
+  script.matches = matchesOf([...origins, ...shareOrigins, ...devOrigins]);
 if (DEV) manifest.name += " (dev)";
 writeFileSync(`${OUT}/manifest.json`, JSON.stringify(manifest, null, 2));
 

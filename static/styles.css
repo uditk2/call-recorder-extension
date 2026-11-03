@@ -105,3 +105,16 @@ button { font: inherit; }
 .meta { display: flex; flex-wrap: wrap; gap: .25rem 1rem; color: var(--ink-2); font-size: .88rem; font-variant-numeric: tabular-nums; }
 .empty { text-align: center; padding: 2.5rem 1rem; color: var(--ink-2); }
 .step-no { width: 28px; height: 28px; border-radius: 50%; display: inline-grid; place-items: center; background: var(--accent-soft); color: var(--accent-strong); font-weight: 600; font-size: .85rem; flex: none; }
+
+/* ---------- transcripts ---------- */
+.tabs { display: flex; gap: .25rem; border-bottom: 1px solid var(--line-2); }
+.tab { cursor: pointer; border: 0; background: none; padding: .55rem .9rem; font-weight: 500; color: var(--ink-2); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+.field { display: grid; gap: .3rem; font-size: .88rem; color: var(--ink-2); }
+.field select, .field input[type="file"] { font: inherit; color: var(--ink); padding: .5rem .6rem; border: 1px solid var(--line-2); border-radius: 10px; background: var(--surface); }
+.fields { display: grid; gap: .8rem; }
+progress { width: 100%; height: 10px; accent-color: var(--accent); }
+.seg { display: grid; grid-template-columns: 4.2rem 1fr; gap: .6rem; padding: .3rem 0; border-bottom: 1px solid var(--line); }
+.seg:last-child { border-bottom: 0; }
+.seg time { color: var(--ink-3); font-variant-numeric: tabular-nums; font-size: .85rem; padding-top: .1rem; }
+.transcript-text { max-height: 60vh; overflow: auto; }

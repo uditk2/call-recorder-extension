@@ -15,7 +15,7 @@ code{background:#14523d;padding:.1em .35em;border-radius:6px}li{margin:.35rem 0}
 p,li{color:rgba(243,243,239,.86)}
 </style>
 <main><div class="top"><a href="./"><img src="logo.png" alt="">Call Recorder for Google Meet</a></div><h1>Call Recorder for Google Meet privacy policy</h1>
-<p>Last updated: 3 November 2026</p>
+<p>Last updated: 3 November 2026 (release 0.2 draft)</p>
 <p>Call Recorder for Google Meet is a Chrome extension that records a browser tab and your microphone to a file on your own computer.</p>
 <p>This policy says what it handles and where that data goes. The short version: <strong>it stays on your computer.</strong></p>
 <h2>Who is responsible</h2>
@@ -25,18 +25,19 @@ p,li{color:rgba(243,243,239,.86)}
 <li><strong>The recording itself.</strong> When you press Start, the extension captures the video and sound of the tab you chose and the sound from your microphone. If you share a screen or a tab in the call, the sound of what you share is recorded too, and only while you share it. This can include other people's voices and anything shown in the call.</li>
 <li><strong>Details about each recording.</strong> The time, length, file size, the name of the site (for example "Google Meet"), the tab's title and the file name.</li>
 <li><strong>Your settings.</strong> Whether setup is done, and the name of the output folder if you chose one.</li>
+<li><strong>Transcripts.</strong> If you press Transcribe, the text of that recording, made on your computer, is kept in Chrome's local extension storage until you delete it.</li>
 </ul>
 <h2>Where it goes</h2>
-<p>Nowhere outside your computer. The extension has no server, makes no network requests, and contains no analytics, advertising or tracking. The recording is written to your browser's private storage while it runs, then saved to your Downloads folder (in a "Call Recordings" folder) or to a folder you chose. The details and settings are kept in Chrome's local extension storage.</p>
-<p>We do not collect, see, sell or share any of it.</p>
+<p>Nowhere outside your computer. The extension has no server and contains no analytics, advertising or tracking. It makes one kind of network request: the first time you press Transcribe, it downloads the speech model you chose (41 to 249 MB) from huggingface.co, and keeps it on your computer. That request is a normal download, so Hugging Face sees your IP address and which model you asked for. No recording, no sound and no text is ever sent. After the download, transcribing works offline. The recording is written to your browser's private storage while it runs, then saved to your Downloads folder (in a "Call Recordings" folder) or to a folder you chose. The details and settings are kept in Chrome's local extension storage.</p>
+<p>We do not collect, see, sell or share any of it. Transcripts are made by the model on your computer, not by a service.</p>
 <h2>How long it is kept</h2>
-<p>Until you delete it. You can remove a recording from the library page, delete its file, or delete the file yourself. Uninstalling the extension removes the library and settings. Files you saved stay where you saved them until you delete them.</p>
+<p>Until you delete it. You can remove a recording from the library page, delete its file, or delete the file yourself. Uninstalling the extension removes the library, transcripts, downloaded models and settings. Files you saved stay where you saved them until you delete them.</p>
 <h2>What each permission is for</h2>
 <ul>
 <li><strong>Tab capture and offscreen document:</strong> to record the tab you chose and keep recording when the popup closes.</li>
 <li><strong>Active tab:</strong> to read the title and address of the tab you clicked the extension on, and only that tab.</li>
 <li><strong>Downloads:</strong> to save the recording to your Downloads folder and to show or delete it from the library.</li>
-<li><strong>Storage:</strong> to keep the library and settings on your computer.</li>
+<li><strong>Storage:</strong> to keep the library, transcripts and settings on your computer.</li>
 <li><strong>Page scripts on Google Meet pages only:</strong> when you share a screen or a tab in the call, a small script notices the share and passes its sound to the recorder inside your browser, and only while a recording is running. It does not read the page's text, forms, accounts or messages, and it sends nothing over the network.</li>
 </ul>
 <h2>Recording other people</h2>
