@@ -5,6 +5,8 @@ import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs"
 
 // `node build.mjs` makes the store version in dist/. `node build.mjs --dev` makes dist-dev/, which also trusts localhost.
 const DEV = process.argv.includes("--dev");
+// The store version leaves Konvene out. `--konvene` (and the dev build) add the Konvene recording badge back.
+const KONVENE = DEV || process.argv.includes("--konvene");
 const OUT = DEV ? "dist-dev" : "dist";
 const pkg = JSON.parse(readFileSync("package.json", "utf8"));
 
@@ -15,7 +17,7 @@ const entries = {
   popup: "src/ui/popup.js",
   setup: "src/ui/setup.js",
   library: "src/ui/library.js",
-  konveneBridge: "src/content/konveneBridge.js",
+  ...(KONVENE ? { konveneBridge: "src/content/konveneBridge.js" } : {}),
   shareRelay: "src/content/shareRelay.js",
   sharePage: "src/content/sharePage.js",
 };
@@ -31,7 +33,7 @@ await build({
   target: "chrome116",
   sourcemap: false,
   minify: false,
-  define: { __DEV_BUILD__: String(DEV) },
+  define: { __DEV_BUILD__: String(DEV), __KONVENE_BUILD__: String(KONVENE) },
   logLevel: "info",
 });
 
@@ -41,7 +43,7 @@ cpSync("static", OUT, { recursive: true });
 // origin list the code uses (src/domain/sites/konveneOrigins.json), so neither is written down twice.
 const manifest = JSON.parse(readFileSync(`${OUT}/manifest.json`, "utf8"));
 manifest.version = pkg.version;
-const origins = JSON.parse(readFileSync("src/domain/sites/konveneOrigins.json", "utf8"));
+const origins = KONVENE ? JSON.parse(readFileSync("src/domain/sites/konveneOrigins.json", "utf8")) : [];
 const devOrigins = DEV ? JSON.parse(readFileSync("src/domain/sites/konveneDevOrigins.json", "utf8")) : [];
 const shareOrigins = JSON.parse(readFileSync("src/domain/sites/callSites.json", "utf8"))
   // Only the sites whose shared sound has been tried on a real call get the page scripts (see callSites.json).
@@ -49,8 +51,9 @@ const shareOrigins = JSON.parse(readFileSync("src/domain/sites/callSites.json", 
   .flatMap((site) => site.origins);
 const matchesOf = (list) => list.map((o) => `${o}/*`);
 // The Konvene badge bridge runs on Konvene only. Share watching also runs on the other call sites we know.
-manifest.content_scripts[0].matches = matchesOf([...origins, ...devOrigins]);
-for (const script of manifest.content_scripts.slice(1)) script.matches = matchesOf([...origins, ...shareOrigins, ...devOrigins]);
+if (KONVENE) manifest.content_scripts[0].matches = matchesOf([...origins, ...devOrigins]);
+else manifest.content_scripts = manifest.content_scripts.filter((script) => !script.js.includes("konveneBridge.js"));
+for (const script of manifest.content_scripts.filter((s) => !s.js.includes("konveneBridge.js"))) script.matches = matchesOf([...origins, ...shareOrigins, ...devOrigins]);
 if (DEV) manifest.name += " (dev)";
 writeFileSync(`${OUT}/manifest.json`, JSON.stringify(manifest, null, 2));
 

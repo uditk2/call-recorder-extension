@@ -18,7 +18,7 @@ engine runs in an offscreen document (reason: USER_MEDIA) that has access to the
 ## activeTab
 
 Lets the extension read the title and address of the tab the user clicked it on, to recognise the site and to name the
-recording (for example "Google Meet"). It is granted only for that tab, only after the user clicks. The only other pages the extension touches are Google Meet and Konvene, through the page scripts described below.
+recording (for example "Google Meet"). It is granted only for that tab, only after the user clicks. The only other page the extension touches is Google Meet, through the page scripts described below.
 
 ## downloads
 
@@ -36,9 +36,9 @@ The manifest allows `'wasm-unsafe-eval'` for extension pages. It is needed to ru
 to WebAssembly) inside the audio worklet. It only lets the extension's own bundled WebAssembly files run. It does not allow
 `eval` or any remote code. Without it the noise reduction cannot start.
 
-## Host access: page scripts on Google Meet and Konvene (host permission justification)
+## Host access: page scripts on Google Meet (host permission justification)
 
-Two small content scripts run only on `https://meet.google.com/*` (Google Meet) and `https://konvene-calls.netlify.app/*` (Konvene), and nowhere else. They exist for one reason: when the user shares a screen or a tab in the call, the sound of that share is added to the recording. Only the call page itself can see what it shares, so the script runs in the page and notices when the page asks Chrome for a screen share. It then offers a copy of the shared sound to the recorder over a WebRTC connection that stays inside the browser on the same computer. It does nothing unless a recording is running in that tab. It does not read the page's text, forms, accounts, or anyone's messages, and it sends nothing over the network. A third script on Konvene also passes "recording started" and "recording stopped" to the page, so Konvene can show everyone in the call a recording badge.
+Two small content scripts run only on `https://meet.google.com/*` (Google Meet), and nowhere else. They exist for one reason: when the user shares a screen or a tab in the call, the sound of that share is added to the recording. Only the call page itself can see what it shares, so the script runs in the page and notices when the page asks Chrome for a screen share. It then offers a copy of the shared sound to the recorder over a WebRTC connection that stays inside the browser on the same computer. It does nothing unless a recording is running in that tab. It does not read the page's text, forms, accounts, or anyone's messages, and it sends nothing over the network.
 
 ## Remote code
 
@@ -63,4 +63,4 @@ How to test, no account needed:
 4. Press **Start recording**, wait a few seconds, then press **Stop and save**.
 5. The file appears in Downloads/Call Recordings. The extension's **Library** page lists it.
 
-On Google Meet, the same steps work, and if you share a tab with sound in the call while recording, that sound is added to the file. On a Konvene call (`https://konvene-calls.netlify.app`), the confirmation box is replaced by a recording badge shown to everyone in the call.
+On Google Meet, the same steps work, and if you share a tab with sound in the call while recording, that sound is added to the file.

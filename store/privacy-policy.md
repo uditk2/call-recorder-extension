@@ -31,11 +31,11 @@ Until you delete it. You can remove a recording from the library page, delete it
 - **Active tab:** to read the title and address of the tab you clicked the extension on, and only that tab.
 - **Downloads:** to save the recording to your Downloads folder and to show or delete it from the library.
 - **Storage:** to keep the library and settings on your computer.
-- **Page scripts on Google Meet and Konvene pages only:** when you share a screen or a tab in the call, a small script notices the share and passes its sound to the recorder inside your browser, and only while a recording is running. It does not read the page's text, forms, accounts or messages, and it sends nothing over the network. On Konvene, a script also tells the page when recording starts and stops, so everyone sees a recording badge.
+- **Page scripts on Google Meet pages only:** when you share a screen or a tab in the call, a small script notices the share and passes its sound to the recorder inside your browser, and only while a recording is running. It does not read the page's text, forms, accounts or messages, and it sends nothing over the network.
 
 ## Recording other people
 
-In many places you need everyone's consent to record a call. On Konvene the extension shows everyone a badge while you record. On Google Meet and other sites it asks you to confirm that you have told everyone. You are responsible for following the law that applies to you.
+In many places you need everyone's consent to record a call. On Google Meet and other sites the extension asks you to confirm that you have told everyone before it starts. You are responsible for following the law that applies to you.
 
 ## Children
 

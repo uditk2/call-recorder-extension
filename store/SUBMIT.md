@@ -7,9 +7,8 @@ Everything that can be prepared is prepared. The steps below need you, because t
 1. **Make the repository public and turn on GitHub Pages** (Settings, Pages, Deploy from a branch, `main`, folder `/docs`). That gives you the landing page and the privacy policy address the dashboard needs: `https://uditk2.github.io/call-recorder-extension/privacy.html`.
 2. **Fill the blanks.** Search `store/` for square brackets: `[Publisher name]` and `[contact email]` in `store/privacy-policy.md`. Both are shown publicly, so use what you want shown. Then run `npm run store:assets` to rebuild `store/privacy-policy.html` and `docs/privacy.html`, and commit.
 3. **Upload the social preview** to the repository (Settings, General, Social preview): `docs/social-preview.png`.
-4. **Check the look.** The logo is new. The colours and fonts follow Konvene's look (bottle green, brass, Instrument Sans, Bricolage Grotesque), and the text says "Konvene" where it supports Konvene. Make sure the owners of Konvene are happy with that.
-5. **Deploy the Konvene change** (the badge, in `src/main.js`, pull request 5 on rakeshmenon/konvene). The extension refuses to record on Konvene until the live page confirms its badge.
-6. **Try it yourself first** on a real call (see "Still to check by a person" in `docs/implementation-plan.md`), on the machine and Chrome you care about.
+4. **Konvene is not in the store build.** The store version has no Konvene page scripts and does not mention it. `npm run build:konvene` makes a version with the Konvene recording badge.
+5. **Try it yourself first** on a real call (see "Still to check by a person" in `docs/implementation-plan.md`), on the machine and Chrome you care about.
 
 ## Submit
 
@@ -18,7 +17,7 @@ The dashboard cannot be driven by a script (Chrome blocks it), so this part is b
 1. **Developer account.** Done once: sign in at the [Chrome Web Store developer dashboard](https://chrome.google.com/webstore/devconsole) with the Google account that will own the extension, turn on 2-Step Verification, accept the terms, pay the one-time US$5 fee, and declare trader or non-trader (an EU rule, your own legal call). A new account can publish 2 extensions.
 2. Run `npm run package` (or use the zip already in `store/package/`). In the dashboard choose **Add new item** and upload `store/package/call-recorder-<version>.zip`.
 3. **Store listing tab.** Paste from `store/listing.md`: name, summary, description, category (Productivity), language (English). Upload the icon (it is in the package), `store/screenshots/*.png` (1280 x 800, up to 5) and `store/promo/small-tile-440x280.png`. Set the support URL, homepage URL and privacy policy URL from the "Links" block of `store/listing.md`.
-4. **Privacy practices tab.** From `store/permissions.md` paste, in order: the single purpose, then the justification under each permission heading (`tabCapture`, `offscreen`, `activeTab`, `downloads`, `storage`), then the host permission justification (the section about page scripts on Google Meet and Konvene). Answer "no" to remote code. In the data usage questions tick what `store/permissions.md` says, and tick all three certifications. Add the privacy policy URL.
+4. **Privacy practices tab.** From `store/permissions.md` paste, in order: the single purpose, then the justification under each permission heading (`tabCapture`, `offscreen`, `activeTab`, `downloads`, `storage`), then the host permission justification (the section about page scripts on Google Meet). Answer "no" to remote code. In the data usage questions tick what `store/permissions.md` says, and tick all three certifications. Add the privacy policy URL.
 5. **Test instructions tab.** Paste the "Notes for the reviewer" section of `store/permissions.md`. No account or login is needed.
 6. **Distribution tab.** Choose public, all regions, free.
 7. **Submit for review.** Choose to publish automatically once approved, or to publish it yourself.

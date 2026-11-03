@@ -14,6 +14,7 @@
     "smoke": "node scripts/smoke.mjs",
     "check": "npm run test && npm run build && npm run validate",
     "build:dev": "node build.mjs --dev",
+    "build:konvene": "node build.mjs --konvene",
     "validate": "node scripts/validate.mjs",
     "package": "node scripts/package.mjs",
     "store:assets": "node scripts/store-assets.mjs",
