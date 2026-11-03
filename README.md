@@ -18,7 +18,7 @@ Call Recorder for Google Meet is a free, open source Chrome extension that recor
 
 ## Install
 
-**From the Chrome Web Store:** coming soon.
+**From the Chrome Web Store:** [Call Recorder for Google Meet](https://chromewebstore.google.com/detail/call-recorder-for-google/bgjkpcdmfinihofnnonidldjlgdcnhei).
 
 **From source:**
 
