@@ -1,5 +1,5 @@
 // Makes the Chrome Web Store graphics and the privacy policy page.
-// The screenshots are the real extension pages from dist/, filled with sample data, framed in Konvene's colours.
+// The screenshots are the real extension pages from dist/, filled with sample data, framed in dark green.
 // Run `npm run build` first. Output goes to store/screenshots, store/promo and store/privacy-policy.html.
 import { execSync } from "node:child_process";
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
@@ -23,13 +23,12 @@ const logoPng = `data:image/png;base64,${readFileSync("static/icons/icon-128.png
 const at = (day, h, m) => Date.UTC(2026, 10, day, h, m);
 const rec = (o) => ({ tabId: 1, stagingName: "x", mimeType: "video/mp4", status: "saved", ...o });
 const LIBRARY = [
-  rec({ id: "5", startedAt: at(2, 5, 35), durationMs: 2530_000, sizeBytes: 86_400_000, siteId: "konvene", siteName: "Konvene", host: "konvene-calls.netlify.app", tabTitle: "Design review", fileName: "a.mp4", location: { kind: "downloads", downloadId: 5, path: "/Users/you/Downloads/Call Recordings/call-2026-11-02-1105-konvene.mp4" } }),
+  rec({ id: "5", startedAt: at(2, 5, 35), durationMs: 2530_000, sizeBytes: 86_400_000, siteId: "google-meet", siteName: "Google Meet", host: "meet.google.com", tabTitle: "Design review", fileName: "a.mp4", location: { kind: "downloads", downloadId: 5, path: "/Users/you/Downloads/Call Recordings/call-2026-11-02-1105-google-meet.mp4" } }),
   rec({ id: "4", startedAt: at(1, 9, 0), durationMs: 3725_000, sizeBytes: 131_000_000, siteId: "google-meet", siteName: "Google Meet", host: "meet.google.com", tabTitle: "Weekly planning", fileName: "b.mp4", location: { kind: "downloads", downloadId: 4, path: "/Users/you/Downloads/Call Recordings/call-2026-11-01-1430-google-meet.mp4" } }),
   rec({ id: "3", startedAt: at(1, 4, 0), durationMs: 912_000, sizeBytes: 31_000_000, siteId: "google-meet", siteName: "Google Meet", host: "meet.google.com", tabTitle: "Customer call", fileName: "c.mp4", status: "unfinished", error: "This recording was cut short." }),
-  rec({ id: "2", startedAt: at(0, 8, 45), durationMs: 1210_000, sizeBytes: 44_000_000, siteId: "web", siteName: "whereby.com", host: "whereby.com", tabTitle: "Interview with Priya", fileName: "d.webm", mimeType: "video/webm", location: { kind: "folder", folderName: "Calls" } }),
+  rec({ id: "2", startedAt: at(0, 8, 45), durationMs: 1210_000, sizeBytes: 44_000_000, siteId: "google-meet", siteName: "Google Meet", host: "meet.google.com", tabTitle: "Interview with Priya", fileName: "d.webm", mimeType: "video/webm", location: { kind: "folder", folderName: "Calls" } }),
 ];
 const MEET = { siteId: "google-meet", siteName: "Google Meet", host: "meet.google.com", tabTitle: "Weekly planning", consent: "recorder-confirms" };
-const KONVENE = { siteId: "konvene", siteName: "Konvene", host: "konvene-calls.netlify.app", tabTitle: "Design review", consent: "badge" };
 
 // ---------- the real pages, with a stand-in for the chrome.* APIs ----------
 function stubChrome(data) {
@@ -137,12 +136,15 @@ try {
       name: "popup-meet", ...popup,
       replies: { "recording/status": { phase: "idle" }, "site/describe": MEET },
       before: (p) => p.check("#consent"),
-      html: (img) => side("Record any call tab", "Your voice and everyone else's, in one file on your computer.", img, 500),
+      html: (img) => side("Record Google Meet calls", "Your voice and everyone else's, in one file on your computer. No bot, no account.", img, 500),
     },
     {
-      name: "popup-konvene", ...popup,
-      replies: { "recording/status": { phase: "idle" }, "site/describe": KONVENE },
-      html: (img) => side("On Konvene, everyone sees the badge", "A named recording badge shows for the whole call while you record.", img, 520),
+      name: "popup-shared", ...popup,
+      replies: {
+        "recording/status": { phase: "recording", recordId: "1", startedAgoMs: 1_325_000, siteName: "Google Meet", tabTitle: "Weekly planning" },
+        "recording/levels": { levels: { micIn: 0.12, mic: 0.09, tab: 0.045, shared: 0.08, sharedActive: true, noiseReductionBypassed: false } },
+      },
+      html: (img) => side("Records the sound you share", "Share a tab or screen in the call and its sound goes into the recording while you share it.", img, 560),
     },
     {
       name: "popup-recording", ...popup,
@@ -173,7 +175,7 @@ try {
 <div style="width:440px;height:280px;position:relative;background:#14523d">
   <div style="position:absolute;left:34px;top:44px;width:64px;height:64px"><img src="${logoPng}" width="64" height="64" alt=""></div>
   <div style="position:absolute;left:34px;top:136px;width:380px"><div class="bar" style="height:5px;width:48px;margin-bottom:14px"></div>
-    <h1 style="font-size:40px">Call Recorder</h1><p class="sub" style="font-size:17px;margin-top:8px">Record calls on your own device.</p></div>
+    <h1 style="font-size:31px">Call Recorder for Google Meet</h1><p class="sub" style="font-size:17px;margin-top:8px">Record Meet calls on your own device.</p></div>
 </div>`);
   await render(browser, promo, { width: 440, height: 280 }, `${OUT.promo}/small-tile-440x280.png`);
 } finally {

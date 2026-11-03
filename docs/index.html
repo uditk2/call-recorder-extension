@@ -38,6 +38,9 @@
     a.btn { display:inline-block; background:var(--accent); color:#fff; text-decoration:none; padding:11px 20px; border-radius:10px; font-weight:600; margin: 0 10px 10px 0; }
     a.btn.alt { background:transparent; color:var(--accent); border:2px solid var(--accent); padding:9px 18px; }
     li { margin: 6px 0; }
+    figure { margin: 22px 0; }
+    figure img { width: 100%; height: auto; border-radius: 12px; display: block; }
+    figcaption { color: var(--muted); font-size: .92rem; margin-top: 6px; }
     code { background:#e6e6df; padding:2px 6px; border-radius:6px; font-size:.92em; }
     pre { background:#e6e6df; padding:14px 16px; border-radius:10px; overflow:auto; }
     footer { margin-top: 48px; color: var(--muted); font-size: .92rem; }
@@ -50,8 +53,11 @@
   <p class="lead">Call Recorder for Google Meet is a free, open source Chrome extension. It saves the call, your microphone and the sound of any screen or tab you share to one file on your own computer. No server, no account, nothing uploaded.</p>
   <p>
     <a class="btn" href="https://github.com/uditk2/call-recorder-extension#install">Install</a>
+    <a class="btn alt" href="https://youtu.be/NoLCt4iQMRY">Watch the 30 second demo</a>
     <a class="btn alt" href="https://github.com/uditk2/call-recorder-extension">View on GitHub</a>
   </p>
+
+  <figure><img src="screenshots/record-meet.png" alt="The Call Recorder popup on a Google Meet tab, with the consent box ticked and a Start recording button" width="1280" height="800"><figcaption>Open the Meet tab, confirm you told everyone, press Start.</figcaption></figure>
 
   <h2>What you get</h2>
   <ul>
@@ -59,13 +65,18 @@
     <li><strong>A clear voice.</strong> Noise reduction runs on your computer, with a safety net that never lets it swallow your voice.</li>
     <li><strong>Private by design.</strong> No cloud, no sign-up, no analytics. Recording starts only when you press Start.</li>
     <li><strong>Light on your computer.</strong> The file is written to disk as it records, so long meetings do not fill your memory.</li>
-    <li><strong>Works on Google Meet, Konvene</strong> and other calls in a Chrome tab.</li>
+    <li><strong>Built for Google Meet.</strong> Other calls in a Chrome tab can be recorded too.</li>
   </ul>
+
+  <h2>Record the sound you share</h2>
+  <p>Share a tab or screen in the call and its sound goes into the recording while you share it.</p>
+  <figure><img src="screenshots/shared-sound.png" alt="The popup while recording, with a Shared sound meter next to Your voice and Call audio" width="1280" height="800"></figure>
+  <figure><img src="screenshots/library.png" alt="The library page listing recordings with their time, length and size" width="1280" height="800"><figcaption>Every recording in one place, with its time, length, size and tab title.</figcaption></figure>
 
   <h2>Questions</h2>
   <p><strong>Can I record a Google Meet call?</strong> Yes. Open the call tab, click the extension, confirm you told everyone, and press Start. The sound of a screen or tab you share in Meet is recorded too.</p>
   <p><strong>Is it free?</strong> Yes. It is open source under AGPL-3.0.</p>
-  <p><strong>Is it legal?</strong> Many places need everyone's consent to record a call. The extension asks you to confirm, and shows a recording badge on Konvene. The responsibility is yours.</p>
+  <p><strong>Is it legal?</strong> Many places need everyone's consent to record a call. The extension asks you to confirm before it starts. The responsibility is yours.</p>
 
   <footer>
     <a href="privacy.html">Privacy policy</a> · <a href="https://github.com/uditk2/call-recorder-extension/issues">Support</a> · Not affiliated with Google.
