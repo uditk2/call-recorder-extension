@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Call Recorder for Google Meet",
   "version": "__VERSION__",
-  "description": "Record Google Meet and other web call tabs, your mic and shared screen sound, on your own device. Nothing is uploaded.",
+  "description": "Record Google Meet and browser calls with audio. Save locally as MP4 or WebM. Free, no account, no bot, no uploads.",
   "minimum_chrome_version": "116",
   "permissions": [
     "tabCapture",

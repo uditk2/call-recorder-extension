@@ -12,7 +12,7 @@ Call Recorder for Google Meet
 
 Also comes from the package (`description` in `manifest.json`), locked in the dashboard:
 
-Record Google Meet and other web call tabs, your mic and shared screen sound, on your own device. Nothing is uploaded.
+Record Google Meet and browser calls with audio. Save locally as MP4 or WebM. Free, no account, no bot, no uploads.
 
 ## Category
 
