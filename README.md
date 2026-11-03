@@ -8,6 +8,14 @@ A free, open source Chrome extension that records web calls (Google Meet and any
 - Small files, and long calls never fill your memory.
 - Recording starts only when you press Start.
 
+## What it does
+
+- Records the call tab (the other people's voices and video) and your microphone as one MP4 or WebM file.
+- Adds the sound of a screen or tab you share in the call, while it is shared.
+- Cleans your voice with noise reduction that runs on your computer.
+- Saves to `Downloads/Call Recordings`, or to a folder you choose, and lists your recordings in a library page.
+- Asks you to confirm that you told everyone on the call before it starts.
+
 ## Install
 
 **From the Chrome Web Store:** coming soon.
