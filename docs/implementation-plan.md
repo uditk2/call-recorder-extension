@@ -40,7 +40,7 @@ Where each piece lives, what is done, and what a person still has to check by ha
 Chrome only allows these after a real click on the extension or with real hardware, so a script cannot do them:
 
 1. Real tab capture on a long live call, and that the call stays audible to you while recording.
-2. Sharing a real screen and a real tab on Meet, Zoom web, Teams web and Konvene, on macOS and on Windows. Zoom and Teams are listed in `src/domain/sites/callSites.json` but have not been tried on a real call. The system sound of a whole screen depends on Chrome and the operating system offering it in Meet's own picker.
+2. Sharing a real screen and a real tab on Google Meet and Konvene, on macOS and on Windows. Zoom web and Teams web are recognised in `src/domain/sites/callSites.json` but their shared sound is switched off (`"shareSound": false`) until it has been tried on a real call.
 3. Echo on speakers (browser echo cancellation should keep the other side out of your microphone).
 4. The H.264 hardware path and AAC inside MP4, and that a crash still leaves a playable file.
 5. A chosen output folder: Chrome may ask to allow it again in a new session. The code falls back to Downloads.

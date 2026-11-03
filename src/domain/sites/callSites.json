@@ -4,14 +4,16 @@
     "name": "Google Meet",
     "origins": [
       "https://meet.google.com"
-    ]
+    ],
+    "shareSound": true
   },
   {
     "id": "zoom",
     "name": "Zoom",
     "origins": [
       "https://app.zoom.us"
-    ]
+    ],
+    "shareSound": false
   },
   {
     "id": "microsoft-teams",
@@ -20,6 +22,7 @@
       "https://teams.microsoft.com",
       "https://teams.live.com",
       "https://teams.cloud.microsoft"
-    ]
+    ],
+    "shareSound": false
   }
 ]

@@ -11,7 +11,7 @@ A free, open source Chrome extension that records web calls (Google Meet and any
 ## What it does
 
 - Records the call tab (the other people's voices and video) and your microphone as one MP4 or WebM file.
-- Adds the sound of a screen or tab you share in the call, while it is shared (Google Meet, Zoom and Microsoft Teams in the browser).
+- Adds the sound of a screen or tab you share in the call, while it is shared (Google Meet).
 - Cleans your voice with noise reduction that runs on your computer.
 - Saves to `Downloads/Call Recordings`, or to a folder you choose, and lists your recordings in a library page.
 - Asks you to confirm that you told everyone on the call before it starts.
@@ -49,7 +49,7 @@ npm run store:assets  # screenshots, promo tile and privacy-policy.html in store
 
 **Does it upload my recordings?** No. There is no server. Files go to `Downloads/Call Recordings`, or to a folder you choose.
 
-**Does it work for Zoom, Teams or Slack calls?** Yes, the web versions in a Chrome tab. Desktop apps are not recorded. The sound of a shared screen is added on Meet, Zoom and Teams.
+**Does it work for Zoom, Teams or Slack calls?** Yes, the web versions in a Chrome tab. Desktop apps are not recorded. The sound of a shared screen is added on Google Meet for now.
 
 **Is it legal to record a call?** In many places you need everyone's consent. The extension asks you to confirm that you told everyone, but the responsibility is yours.
 

@@ -76,4 +76,9 @@ describe("site announcements", () => {
     expect(registry.describe("https://app.zoom.us.example.com/", "x").siteId).toBe("web");
     expect(registry.describe("https://evilteams.microsoft.com.example.org/", "x").siteId).toBe("web");
   });
+
+  it("says for every call site whether its shared sound is on, and only Meet has it on for now", () => {
+    for (const site of callSites) expect(typeof site.shareSound).toBe("boolean");
+    expect(callSites.filter((s) => s.shareSound).map((s) => s.id)).toEqual(["google-meet"]);
+  });
 });
